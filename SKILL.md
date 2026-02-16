@@ -12,7 +12,7 @@ Full-pipeline academic paper writing assistant. From literature search to submis
 This skill manages the entire paper writing workflow:
 
 ```
-Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → Pre-Submission → [Revision]
+Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → Pre-Submission → [Revision] → [Post-Acceptance] → [Rejection → Resubmission]
 ```
 
 Each paper is a **project directory** containing structured Markdown files for every section, a literature matrix, and quality checklists.
@@ -26,6 +26,7 @@ Each paper is a **project directory** containing structured Markdown files for e
 | **Review Article** | Thematic sections | - | Flexible structure |
 | **Letter / Short Communication** | Condensed IMRAD | Same as original | Word limit focus |
 | **Systematic Review** | PRISMA-compliant | PRISMA 2020 | With PRISMA checklist |
+| **Study Protocol** | SPIRIT-compliant | SPIRIT 2025 | For trial registration papers |
 
 ## Workflow
 
@@ -64,14 +65,18 @@ Based on paper type and study design, select the appropriate reporting guideline
 
 | Study Type | Guideline | Reference |
 |-----------|-----------|-----------|
-| Randomized Controlled Trial | CONSORT 2010 | `references/reporting-guidelines.md` |
-| Observational study (cohort, case-control, cross-sectional) | STROBE | `references/reporting-guidelines.md` |
-| Systematic review / meta-analysis | PRISMA 2020 | `references/reporting-guidelines.md` |
-| Case report | CARE | `references/reporting-guidelines.md` |
-| Diagnostic accuracy study | STARD | EQUATOR Network |
-| Quality improvement study | SQUIRE | EQUATOR Network |
+| Randomized Controlled Trial | CONSORT 2025 | `references/reporting-guidelines-full.md` |
+| Observational study (cohort, case-control, cross-sectional) | STROBE | `references/reporting-guidelines-full.md` |
+| Systematic review / meta-analysis | PRISMA 2020 | `references/reporting-guidelines-full.md` |
+| Case report | CARE | `references/reporting-guidelines-full.md` |
+| Diagnostic accuracy study | STARD 2015 | `references/reporting-guidelines-full.md` |
+| Quality improvement study | SQUIRE 2.0 | `references/reporting-guidelines-full.md` |
+| Study protocol (clinical trial) | SPIRIT 2025 | `references/reporting-guidelines-full.md` |
+| Prediction model (incl. AI/ML) | TRIPOD+AI 2024 | `references/reporting-guidelines-full.md` |
+| Animal research | ARRIVE 2.0 | `references/reporting-guidelines-full.md` |
+| Health economics | CHEERS 2022 | `references/reporting-guidelines-full.md` |
 
-Read `~/.claude/skills/paper-writer/references/reporting-guidelines.md` and note the key checklist items for the selected guideline. These items will be checked throughout the writing process.
+Read `~/.claude/skills/paper-writer/references/reporting-guidelines.md` (summary) or `references/reporting-guidelines-full.md` (comprehensive) and note the key checklist items for the selected guideline. These items will be checked throughout the writing process.
 
 #### Step 0.3: Create Project Directory
 
@@ -293,7 +298,7 @@ Read `~/.claude/skills/paper-writer/templates/discussion.md` with the `Read` too
 **Discussion structure:**
 1. Summary of main findings
 2-N. Comparison with prior literature (use `00_literature/literature-matrix.md`)
-N+1. Limitations (be honest)
+N+1. Limitations — read `~/.claude/skills/paper-writer/templates/limitations-guide.md` for categories, templates, and bilingual examples
 N+2. Clinical implications / future directions
 
 **Discussion rules:**
@@ -301,6 +306,7 @@ N+2. Clinical implications / future directions
 - No excessive speculation
 - Support every claim with a reference
 - Keep it focused
+- Limitations subsection is mandatory — be specific about direction of bias and mitigation
 
 ##### Step 3.4: Introduction (Paragraphs 1-2)
 
@@ -343,12 +349,14 @@ Write `02_case.md` following the CARE structure:
 4. Diagnostic assessment
 5. Therapeutic intervention
 6. Follow-up and outcomes
+7. Patient perspective (CARE item 10) — when possible, include the patient's own experience in their words
 
 **Rules:**
 - Chronological order
 - Only clinically relevant details
 - Document informed consent for publication
 - Report both positive AND negative findings
+- Patient perspective strengthens the report and is recommended by CARE guidelines
 
 ##### Step 3.2-CR: Discussion
 
@@ -676,9 +684,13 @@ Run the quality checklist against each section. Update `checklists/section-quali
 Read `~/.claude/skills/paper-writer/templates/cover-letter.md` and `~/.claude/skills/paper-writer/templates/submission-ready.md` with the `Read` tool.
 
 Create:
-1. Cover letter using the template
-2. `checklists/submission-ready.md` using the template — fill in journal-specific limits from Phase 0
-3. Compile all sections into a single reading-order Markdown file for the user to review
+1. **Title page** — read `~/.claude/skills/paper-writer/templates/title-page.md` for the template (running head, all authors with ORCID, affiliations, word counts, corresponding author, clinical trial registration)
+2. **Highlights / Key Points** — read `~/.claude/skills/paper-writer/templates/highlights.md` and create the appropriate summary box for the target journal (JAMA Key Points, BMJ "What is known", Elsevier Highlights, Lay Summary, etc.)
+3. **Acknowledgments** — read `~/.claude/skills/paper-writer/templates/acknowledgments.md` and draft (non-author contributions, AI tool disclosure, patient acknowledgment)
+4. **Declarations** — read `~/.claude/skills/paper-writer/templates/declarations.md` and complete (Ethics, COI using `references/coi-detailed.md`, Funding, Data Availability, AI Disclosure, CRediT)
+5. Cover letter using the template
+6. `checklists/submission-ready.md` using the template — fill in journal-specific limits from Phase 0
+7. Compile all sections into a single reading-order Markdown file for the user to review
 
 **Final compilation order (reading order):**
 
@@ -748,6 +760,77 @@ For each comment, use this format:
 - [ ] References updated if new citations added
 - [ ] Abstract updated if results or conclusions changed
 - [ ] Cover letter for resubmission drafted
+
+### Phase 9: Post-Acceptance
+
+Read `~/.claude/skills/paper-writer/templates/proof-correction.md` with the `Read` tool.
+
+After acceptance, the corresponding author receives galley proofs. This is the LAST opportunity to correct errors.
+
+#### Step 9.1: Proof Review
+
+When proofs arrive (typically 2-8 weeks after acceptance, turnaround: 24-72 hours):
+
+**Critical checks:**
+- [ ] Author names, affiliations, and ORCID — correct?
+- [ ] Abstract numbers match main text?
+- [ ] All tables — data values correct, no transposition errors?
+- [ ] All figures — correct images, acceptable quality?
+- [ ] Reference list — complete, correct numbering?
+- [ ] Corresponding author email — correct?
+- [ ] Funding and COI statements — accurate?
+- [ ] Clinical trial registration number — present?
+
+**NOT allowed at proof stage:**
+- Rewriting sentences or paragraphs
+- Adding new data, references, or authors
+- Changing conclusions
+
+#### Step 9.2: Submit Corrections
+
+Use the journal's proofing system (Proof Central, CATS, eProofing, or direct PDF return). For each correction: state page, column, line, and exact change.
+
+#### Step 9.3: Post-Publication
+
+After publication:
+- Verify the final published version matches the accepted manuscript
+- Share via institutional repository (Green OA) if applicable — see `references/open-access-guide.md`
+- Update clinical trial registry with results (if applicable) — see `references/clinical-trial-registration.md`
+- Share with co-authors and collaborators
+
+### Phase 10: Rejection & Resubmission
+
+Read `~/.claude/skills/paper-writer/references/desk-rejection-prevention.md` and `references/journal-reformatting.md` with the `Read` tool.
+
+#### Step 10.1: Assess the Rejection
+
+| Decision | Action |
+|----------|--------|
+| **Desk rejection (scope)** | Reformat and submit to next journal immediately |
+| **Desk rejection (quality)** | Revise manuscript, then reformat and submit |
+| **Peer review rejection** | Read reviews carefully; major revision before next journal |
+| **Reject with encouragement to resubmit** | Treat as major revision; address all comments |
+
+#### Step 10.2: Quick Reformat
+
+Use `references/journal-reformatting.md` checklist:
+1. Change reference format (use reference manager)
+2. Restructure abstract with new headings — see `references/abstract-formats.md`
+3. Adjust word count — see `references/word-count-limits.md`
+4. Add/remove special sections (Key Points, Highlights)
+5. Reformat title page
+6. Write new cover letter (address new editor by name)
+7. Verify no mention of previous journal name in manuscript
+
+#### Step 10.3: Cascading Submission Strategy
+
+Track submissions:
+
+| Journal | Submitted | Decision | Turnaround | Next Action |
+|---------|-----------|----------|-----------|-------------|
+| [Journal 1] | YYYY-MM-DD | — | — | — |
+
+Plan cascade: Reach journal → Target journal → Safety journal → Backup journal.
 
 ## Section-Specific AI Guidelines
 
@@ -943,16 +1026,19 @@ When the user invokes this skill on an existing project directory:
 - `references/supplementary-materials.md` - Supplementary materials strategy guide
 - `references/citation-verification.md` - Citation authenticity verification guide
 - `references/pubmed-query-builder.md` - PubMed search query construction guide
-
-## External References
-
-- ICMJE Recommendations (Uniform Requirements for Manuscripts)
-- EQUATOR Network (reporting guidelines)
-- CONSORT 2010 (RCTs)
-- STROBE (observational studies)
-- PRISMA 2020 (systematic reviews)
-- CARE (case reports)
-- STARD (diagnostic accuracy studies)
-- matsuikentaro1/humanizer_academic (English academic AI pattern detection)
-- humanizer-ja (Japanese AI writing pattern detection)
-- Wikipedia: Signs of AI writing
+- `templates/title-page.md` - Title page template (running head, ORCID, affiliations)
+- `templates/highlights.md` - Key Points / Highlights / Summary boxes (JAMA, BMJ, Elsevier, etc.)
+- `templates/limitations-guide.md` - Limitations section writing guide with templates
+- `templates/acknowledgments.md` - Acknowledgments template (AI tools, medical writing)
+- `templates/proof-correction.md` - Post-acceptance proof correction guide
+- `references/submission-portals.md` - Submission portal guide (ScholarOne, Editorial Manager, etc.)
+- `references/open-access-guide.md` - Open Access models, APCs, preprints, funder mandates
+- `references/clinical-trial-registration.md` - Clinical trial registration guide (ClinicalTrials.gov, UMIN-CTR, jRCT)
+- `references/abstract-formats.md` - Journal-specific abstract formats (JAMA, NEJM, Lancet, BMJ, etc.)
+- `references/word-count-limits.md` - Word count limits by journal and paper type
+- `references/coi-detailed.md` - Detailed COI categories, CRediT taxonomy, ORCID guide
+- `references/desk-rejection-prevention.md` - Desk rejection prevention and journal selection
+- `references/journal-reformatting.md` - Quick reformatting guide after rejection
+- `references/statistical-reporting-full.md` - Extended SAMPL statistical reporting guide
+- `references/reporting-guidelines-full.md` - Comprehensive reporting guidelines (20+ guidelines with checklists)
+- `references/master-reference-list.md` - Master reference list with URLs (all resources)
