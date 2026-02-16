@@ -1,197 +1,198 @@
 # Paper Writer Skill
 
-Claude Code用の医学論文執筆スキル。文献検索から投稿・リジェクト対応まで、論文執筆の全工程をカバーする。
+A Claude Code skill for medical/scientific paper writing. Covers the entire manuscript lifecycle from literature search to submission, peer review response, and rejection handling.
 
-## 概要
+> **日本語版はこちら → [README.ja.md](README.ja.md)**
+
+## Overview
 
 ```
-文献検索 → アウトライン → 表・図 → 執筆 → ヒューマナイズ → 参考文献 → 品質チェック → 投稿準備 → [査読対応] → [受理後] → [リジェクト → 再投稿]
+Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → Pre-Submission → [Revision] → [Post-Acceptance] → [Rejection → Resubmission]
 ```
 
-**10フェーズ**の完全なパイプラインで、IMRAD形式の論文プロジェクトディレクトリを自動生成・管理する。
+A **10-phase** pipeline that generates and manages IMRAD-format project directories with structured Markdown files, a literature matrix, and quality checklists.
 
-## 対応論文タイプ（6種）
+## Supported Paper Types
 
-| タイプ | 構成 | 報告ガイドライン |
-|--------|------|------------------|
+| Type | Structure | Reporting Guideline |
+|------|-----------|---------------------|
 | **Original Article** | Full IMRAD | STROBE / CONSORT |
 | **Case Report** | Intro / Case / Discussion | CARE |
-| **Review Article** | テーマ別セクション | — |
-| **Systematic Review** | PRISMA準拠 | PRISMA 2020 |
-| **Letter / Short Communication** | 短縮IMRAD | 同上 |
-| **Study Protocol** | SPIRIT準拠 | SPIRIT 2025 |
+| **Review Article** | Thematic sections | — |
+| **Systematic Review** | PRISMA-compliant | PRISMA 2020 |
+| **Letter / Short Communication** | Condensed IMRAD | Same as original |
+| **Study Protocol** | SPIRIT-compliant | SPIRIT 2025 |
 
-## 使い方
+## Usage
 
-### Claude Codeから呼び出す
+### Invoke from Claude Code
 
 ```
 /paper-writer
 ```
 
-または自然言語で：
-- `論文を書く`
-- `write paper`
-- `論文執筆`
-- `start manuscript`
+Or use natural language triggers:
+- `write paper` / `start manuscript` / `research paper`
+- `論文を書く` / `論文執筆` / `原稿作成`
 
-### 初回セットアップ
+### Project Setup
 
-呼び出すと以下を聞かれる：
+The skill prompts you for:
 
-1. **仮タイトル**
-2. **論文タイプ**（上記6種から選択）
-3. **対象ジャーナル**（任意、推奨）
-4. **言語**（English / Japanese / Both）
-5. **リサーチクエスチョン**（1文）
-6. **利用可能なデータ**（表・図の有無）
+1. **Working title**
+2. **Paper type** (one of the 6 types above)
+3. **Target journal** (optional, recommended)
+4. **Language** (English / Japanese / Both)
+5. **Research question** (one sentence)
+6. **Available data** (existing tables/figures)
 
-ジャーナルを指定すると、word limit・citation style・abstract形式などを自動調査してREADME.mdに記録する。
+When a target journal is specified, the skill automatically looks up word limits, citation style, abstract format, and other requirements.
 
-## ファイル構成
+## File Structure
 
 ```
 paper-writer/
-├── SKILL.md                           # メインワークフロー定義
-├── CHANGELOG.md                       # 変更履歴
-├── README.md                          # このファイル
+├── SKILL.md                           # Main workflow definition
+├── CHANGELOG.md                       # Version history
+├── README.md                          # This file
+├── README.ja.md                       # Japanese documentation
 │
-├── templates/                         # 30ファイル — セクション別テンプレート
-│   ├── project-init.md                # プロジェクト初期化（Original Article）
-│   ├── project-init-case.md           # プロジェクト初期化（Case Report）
-│   ├── literature-matrix.md           # 文献比較マトリクス
-│   ├── methods.md                     # Methods執筆ガイド
-│   ├── results.md                     # Results執筆ガイド
-│   ├── introduction.md                # Introduction執筆ガイド
-│   ├── discussion.md                  # Discussion執筆ガイド
-│   ├── conclusion.md                  # Conclusion執筆ガイド
-│   ├── abstract.md                    # Abstract執筆ガイド（Original Article）
-│   ├── cover-letter.md                # カバーレターテンプレート
-│   ├── submission-ready.md            # 投稿前チェックリスト
-│   ├── case-report.md                 # Case Presentation（CARE準拠）
-│   ├── case-introduction.md           # Case Report Introduction
-│   ├── case-abstract.md               # Case Report Abstract（CARE形式）
-│   ├── review-article.md              # Review Article構成ガイド
-│   ├── sr-outline.md                  # Systematic Reviewアウトライン
-│   ├── sr-data-extraction.md          # SRデータ抽出テンプレート
-│   ├── sr-prisma-flow.md              # PRISMAフローダイアグラム
-│   ├── sr-grade.md                    # GRADEエビデンス評価
-│   ├── sr-rob.md                      # Risk of Bias評価
-│   ├── sr-prospero.md                 # PROSPERO登録テンプレート
-│   ├── response-to-reviewers.md       # 査読者への回答テンプレート
-│   ├── revision-cover-letter.md       # 改訂時カバーレター
-│   ├── declarations.md                # 宣言テンプレート（倫理・COI・資金・AI開示）
-│   ├── graphical-abstract.md          # グラフィカルアブストラクトガイド
-│   ├── title-page.md                  # タイトルページテンプレート
-│   ├── highlights.md                  # Key Points / Highlights（JAMA, BMJ等）
-│   ├── limitations-guide.md           # Limitations記載ガイド
-│   ├── acknowledgments.md             # 謝辞テンプレート
-│   └── proof-correction.md            # 受理後の校正ガイド
+├── templates/                         # 30 files — Section templates
+│   ├── project-init.md                # Project initialization (Original Article)
+│   ├── project-init-case.md           # Project initialization (Case Report)
+│   ├── literature-matrix.md           # Literature comparison matrix
+│   ├── methods.md                     # Methods writing guide
+│   ├── results.md                     # Results writing guide
+│   ├── introduction.md                # Introduction writing guide
+│   ├── discussion.md                  # Discussion writing guide
+│   ├── conclusion.md                  # Conclusion writing guide
+│   ├── abstract.md                    # Abstract writing guide (Original Article)
+│   ├── cover-letter.md                # Cover letter template
+│   ├── submission-ready.md            # Pre-submission checklist
+│   ├── case-report.md                 # Case presentation (CARE-compliant)
+│   ├── case-introduction.md           # Case report introduction
+│   ├── case-abstract.md               # Case report abstract (CARE format)
+│   ├── review-article.md              # Review article structure guide
+│   ├── sr-outline.md                  # Systematic review outline
+│   ├── sr-data-extraction.md          # SR data extraction template
+│   ├── sr-prisma-flow.md              # PRISMA flow diagram
+│   ├── sr-grade.md                    # GRADE evidence assessment
+│   ├── sr-rob.md                      # Risk of bias assessment
+│   ├── sr-prospero.md                 # PROSPERO registration template
+│   ├── response-to-reviewers.md       # Response to reviewers template
+│   ├── revision-cover-letter.md       # Revision cover letter
+│   ├── declarations.md                # Declarations (ethics, COI, funding, AI disclosure)
+│   ├── graphical-abstract.md          # Graphical abstract guide
+│   ├── title-page.md                  # Title page template
+│   ├── highlights.md                  # Key points / highlights (JAMA, BMJ, etc.)
+│   ├── limitations-guide.md           # Limitations section guide
+│   ├── acknowledgments.md             # Acknowledgments template
+│   └── proof-correction.md            # Post-acceptance proof correction guide
 │
-├── references/                        # 27ファイル — リファレンス資料
-│   ├── imrad-guide.md                 # IMRAD構造と執筆原則
-│   ├── section-checklist.md           # セクション別品質チェックリスト
-│   ├── citation-guide.md              # 引用形式と管理
-│   ├── citation-verification.md       # 引用検証ガイド
-│   ├── reporting-guidelines.md        # 報告ガイドラインサマリー
-│   ├── reporting-guidelines-full.md   # 20+報告ガイドライン詳細
-│   ├── humanizer-academic.md          # AI文体検出（EN 18 + JP 13パターン）
-│   ├── statistical-reporting.md       # 統計報告ガイド
-│   ├── statistical-reporting-full.md  # 拡張SAMPLガイド
-│   ├── journal-selection.md           # ジャーナル選択戦略
-│   ├── pubmed-query-builder.md        # PubMed検索クエリ構築
-│   ├── multilingual-guide.md          # 多言語対応ガイド
-│   ├── coauthor-review.md             # 共著者レビュープロセス
-│   ├── ai-disclosure.md               # ICMJE 2023 AI開示ガイド
-│   ├── tables-figures-guide.md        # 表・図作成ガイド
-│   ├── keywords-guide.md              # キーワード・MeSH選択戦略
-│   ├── supplementary-materials.md     # 補足資料戦略
-│   ├── hook-compatibility.md          # Claude Codeフック互換性
-│   ├── submission-portals.md          # 投稿ポータルガイド
-│   ├── open-access-guide.md           # OAモデル・APC・ライセンス
-│   ├── clinical-trial-registration.md # 臨床試験登録ガイド
-│   ├── abstract-formats.md            # ジャーナル別抄録形式
-│   ├── word-count-limits.md           # ジャーナル別語数制限
-│   ├── coi-detailed.md               # COI詳細・CRediT・ORCID
-│   ├── desk-rejection-prevention.md   # デスクリジェクト防止
-│   ├── journal-reformatting.md        # ジャーナル再フォーマット
-│   └── master-reference-list.md       # マスターURL一覧（100+リンク）
+├── references/                        # 27 files — Reference materials
+│   ├── imrad-guide.md                 # IMRAD structure and writing principles
+│   ├── section-checklist.md           # Per-section quality checklist
+│   ├── citation-guide.md              # Citation formatting and management
+│   ├── citation-verification.md       # Citation verification guide
+│   ├── reporting-guidelines.md        # Reporting guidelines summary
+│   ├── reporting-guidelines-full.md   # 20+ reporting guidelines with checklists
+│   ├── humanizer-academic.md          # AI writing detection (EN 18 + JP 13 patterns)
+│   ├── statistical-reporting.md       # Statistical reporting guide
+│   ├── statistical-reporting-full.md  # Extended SAMPL guide
+│   ├── journal-selection.md           # Journal selection strategy
+│   ├── pubmed-query-builder.md        # PubMed search query builder
+│   ├── multilingual-guide.md          # Multilingual support guide
+│   ├── coauthor-review.md             # Co-author review process
+│   ├── ai-disclosure.md               # ICMJE 2023 AI disclosure guide
+│   ├── tables-figures-guide.md        # Tables and figures creation guide
+│   ├── keywords-guide.md              # Keywords and MeSH selection strategy
+│   ├── supplementary-materials.md     # Supplementary materials strategy
+│   ├── hook-compatibility.md          # Claude Code hook compatibility
+│   ├── submission-portals.md          # Submission portal guide
+│   ├── open-access-guide.md           # OA models, APCs, CC licenses
+│   ├── clinical-trial-registration.md # Clinical trial registration guide
+│   ├── abstract-formats.md            # Journal-specific abstract formats
+│   ├── word-count-limits.md           # Word count limits by journal
+│   ├── coi-detailed.md               # COI categories, CRediT taxonomy, ORCID
+│   ├── desk-rejection-prevention.md   # Desk rejection prevention
+│   ├── journal-reformatting.md        # Journal reformatting and cascading strategy
+│   └── master-reference-list.md       # Master URL list (100+ links, 13 categories)
 │
-└── scripts/                           # 3ファイル — ユーティリティ
-    ├── compile-manuscript.sh           # セクション統合スクリプト
-    ├── word-count.sh                  # 語数カウント
-    └── forest-plot.py                 # フォレストプロット生成
+└── scripts/                           # 3 files — Utilities
+    ├── compile-manuscript.sh           # Compile sections into single manuscript
+    ├── word-count.sh                  # Word count utility
+    └── forest-plot.py                 # Forest plot generator
 ```
 
-**合計: 62ファイル**（テンプレート30 + リファレンス27 + スクリプト3 + SKILL.md + CHANGELOG.md）
+**Total: 62 files** (30 templates + 27 references + 3 scripts + SKILL.md + CHANGELOG.md)
 
-## ワークフロー（10フェーズ）
+## Workflow (10 Phases)
 
-| Phase | 内容 | 主な操作 |
-|-------|------|----------|
-| **0** | プロジェクト初期化 | ジャーナル要件調査、報告ガイドライン選択、ディレクトリ生成 |
-| **1** | 文献検索・整理 | PubMed/Google Scholar検索、文献マトリクス作成 |
-| **2** | アウトライン | 論文骨格の設計（ユーザー承認必須） |
-| **2.5** | 表・図 | 執筆前に表・図を設計 |
-| **3** | 執筆 | Methods→Results→Intro P3+Conclusion→Discussion→Intro P1-2→Abstract→Title |
-| **4** | ヒューマナイズ | AI文体パターン除去（EN 18 + JP 13パターン） |
-| **5** | 参考文献 | 引用整理、形式統一、存在確認 |
-| **6** | 品質チェック | セクション横断検証、報告ガイドラインチェック |
-| **7** | 投稿準備 | カバーレター、タイトルページ、宣言、最終チェック |
-| **8** | 査読対応 | コメント整理、回答レター、改訂実施 |
-| **9** | 受理後 | 校正（24-72時間）、校正提出、出版後タスク |
-| **10** | リジェクト対応 | 評価、再フォーマット、カスケード投稿戦略 |
+| Phase | Description | Key Operations |
+|-------|-------------|----------------|
+| **0** | Project Initialization | Journal requirements lookup, reporting guideline selection, directory generation |
+| **1** | Literature Search | PubMed/Google Scholar search, literature matrix creation |
+| **2** | Outline | Paper skeleton design (user approval required) |
+| **2.5** | Tables & Figures | Design tables/figures before writing prose |
+| **3** | Drafting | Methods → Results → Intro P3 + Conclusion → Discussion → Intro P1-2 → Abstract → Title |
+| **4** | Humanize | AI writing pattern removal (EN 18 + JP 13 patterns) |
+| **5** | References | Citation formatting, deduplication, existence verification |
+| **6** | Quality Review | Cross-section verification, reporting guideline compliance |
+| **7** | Pre-Submission | Cover letter, title page, declarations, final checklist |
+| **8** | Revision | Reviewer comment organization, response letter, revision implementation |
+| **9** | Post-Acceptance | Proof review (24-72 hr), correction submission, post-publication tasks |
+| **10** | Rejection & Resubmission | Assessment, quick reformat, cascading submission strategy |
 
-## 報告ガイドライン（20+）
+## Reporting Guidelines (20+)
 
 CONSORT 2025, STROBE, PRISMA 2020, CARE, STARD 2015, SQUIRE 2.0, SPIRIT 2025, TRIPOD+AI 2024, ARRIVE 2.0, CHEERS 2022, MOOSE, TREND, SRQR, COREQ, AGREE II, RECORD, STREGA, ENTREQ, PRISMA-ScR, GRADE
 
-## 言語対応
+## Language Support
 
-| 言語 | 対応内容 |
-|------|----------|
-| **English** | 全テンプレート・ガイド対応、AI文体検出18パターン |
-| **日本語** | 全テンプレートEN/JP併記、AI文体検出13パターン、「である」調 |
+| Language | Coverage |
+|----------|----------|
+| **English** | All templates and guides, 18 AI writing detection patterns |
+| **Japanese** | All templates bilingual (EN/JP), 13 AI writing detection patterns, である-style |
 
-## AI文体除去（Humanizer）
+## AI Writing Detection (Humanizer)
 
-学術論文からAI生成っぽさを除去する専用フェーズ（Phase 4）。
+A dedicated phase (Phase 4) to remove AI-generated writing patterns from academic manuscripts.
 
-- **英語**: 18パターン（significance inflation, AI vocabulary, filler phrases等）
-- **日本語**: 13パターン（記号・リズム・学術文特有の問題）
-- セクション別の重点パターン指定
-- 修正前後の具体例付き
+- **English**: 18 patterns (significance inflation, AI vocabulary, filler phrases, etc.)
+- **Japanese**: 13 patterns (symbol overuse, rhythm monotony, academic-specific issues)
+- Section-specific priority patterns
+- Before/after examples included
 
-## マスターリファレンス
+## Master Reference List
 
-`references/master-reference-list.md` に100+のURLを13カテゴリで整理：
+`references/master-reference-list.md` contains 100+ URLs organized in 13 categories:
 
-1. Author Guidelines（ICMJE, EQUATOR等）
-2. Reporting Guidelines（CONSORT, STROBE等）
-3. Ethics & Registration（ClinicalTrials.gov, UMIN等）
-4. Statistics（SAMPL, Cochrane等）
-5. Literature Databases（PubMed, Google Scholar等）
-6. Reference Managers（Zotero, Mendeley等）
-7. Submission Portals（ScholarOne等）
-8. AI Disclosure（ICMJE, Nature等のポリシー）
-9. Open Access（DOAJ, Sherpa Romeo等）
-10. Writing Support（英文校正サービス等）
-11. Figure/Table Tools（BioRender, GraphPad等）
-12. Journal Author Instructions（主要ジャーナル）
-13. Japanese Resources（医中誌, CiNii等）
+1. Author Guidelines (ICMJE, EQUATOR, etc.)
+2. Reporting Guidelines (CONSORT, STROBE, etc.)
+3. Ethics & Registration (ClinicalTrials.gov, UMIN, etc.)
+4. Statistics (SAMPL, Cochrane, etc.)
+5. Literature Databases (PubMed, Google Scholar, etc.)
+6. Reference Managers (Zotero, Mendeley, etc.)
+7. Submission Portals (ScholarOne, etc.)
+8. AI Disclosure (ICMJE, Nature policies, etc.)
+9. Open Access (DOAJ, Sherpa Romeo, etc.)
+10. Writing Support (editing services, etc.)
+11. Figure/Table Tools (BioRender, GraphPad, etc.)
+12. Journal Author Instructions (major journals)
+13. Japanese Resources (Ichushi, CiNii, etc.)
 
-## インストール
+## Installation
 
-このリポジトリを `~/.claude/skills/paper-writer/` に配置する：
+Clone this repository into the Claude Code skills directory:
 
 ```bash
 git clone https://github.com/kgraph57/paper-writer-skill.git ~/.claude/skills/paper-writer
 ```
 
-Claude Codeの設定に登録：
+Register the skill in Claude Code settings:
 
 ```json
-// ~/.claude/settings.json の "skills" に追加
+// Add to "skills" in ~/.claude/settings.json
 {
   "skills": {
     "paper-writer": {
@@ -201,19 +202,19 @@ Claude Codeの設定に登録：
 }
 ```
 
-## 要件
+## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI
-- WebSearch / WebFetch（文献検索に使用）
-- Python 3（`forest-plot.py` 使用時のみ）
+- WebSearch / WebFetch (used for literature search)
+- Python 3 (only for `forest-plot.py`)
 
-## ライセンス
+## License
 
 Private repository.
 
-## バージョン
+## Versions
 
-- **v2.0.0** (2026-02-17) — 完全ライフサイクル対応、16ファイル追加、10フェーズ化
-- **v1.0.0** (2026-02-17) — 構造改善、6ファイル追加、5論文タイプ対応
+- **v2.0.0** (2026-02-17) — Full lifecycle coverage, 16 new files, 10 phases
+- **v1.0.0** (2026-02-17) — Structural improvements, 6 new files, 5 paper types
 
-詳細は [CHANGELOG.md](CHANGELOG.md) を参照。
+See [CHANGELOG.md](CHANGELOG.md) for details.
