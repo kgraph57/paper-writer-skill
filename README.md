@@ -57,7 +57,7 @@ paper-writer/
 ├── README.md                          # This file
 ├── README.ja.md                       # Japanese documentation
 │
-├── templates/                         # 30 files — Section templates
+├── templates/                         # 31 files — Section templates
 │   ├── project-init.md                # Project initialization (Original Article)
 │   ├── project-init-case.md           # Project initialization (Case Report)
 │   ├── literature-matrix.md           # Literature comparison matrix
@@ -87,7 +87,9 @@ paper-writer/
 │   ├── highlights.md                  # Key points / highlights (JAMA, BMJ, etc.)
 │   ├── limitations-guide.md           # Limitations section guide
 │   ├── acknowledgments.md             # Acknowledgments template
-│   └── proof-correction.md            # Post-acceptance proof correction guide
+│   ├── proof-correction.md            # Post-acceptance proof correction guide
+│   ├── data-management.md             # Data management (raw/processed/analysis)
+│   └── analysis-workflow.md           # Data analysis workflow guide
 │
 ├── references/                        # 27 files — Reference materials
 │   ├── imrad-guide.md                 # IMRAD structure and writing principles
@@ -118,19 +120,21 @@ paper-writer/
 │   ├── journal-reformatting.md        # Journal reformatting and cascading strategy
 │   └── master-reference-list.md       # Master URL list (100+ links, 13 categories)
 │
-└── scripts/                           # 3 files — Utilities
+└── scripts/                           # 5 files — Utilities & Analysis
     ├── compile-manuscript.sh           # Compile sections into single manuscript
     ├── word-count.sh                  # Word count utility
-    └── forest-plot.py                 # Forest plot generator
+    ├── forest-plot.py                 # Forest plot generator
+    ├── table1.py                      # Table 1 generator (baseline characteristics)
+    └── analysis-template.py           # Statistical analysis template (t-test, logistic, survival)
 ```
 
-**Total: 62 files** (30 templates + 27 references + 3 scripts + SKILL.md + CHANGELOG.md)
+**Total: 66 files** (31 templates + 27 references + 5 scripts + SKILL.md + CHANGELOG.md + README.md)
 
 ## Workflow (10 Phases)
 
 | Phase | Description | Key Operations |
 |-------|-------------|----------------|
-| **0** | Project Initialization | Journal requirements lookup, reporting guideline selection, directory generation |
+| **0** | Project Initialization | Journal requirements lookup, reporting guideline selection, directory generation, data management & analysis |
 | **1** | Literature Search | PubMed/Google Scholar search, literature matrix creation |
 | **2** | Outline | Paper skeleton design (user approval required) |
 | **2.5** | Tables & Figures | Design tables/figures before writing prose |
@@ -206,7 +210,7 @@ Register the skill in Claude Code settings:
 
 - [Claude Code](https://claude.ai/code) CLI
 - WebSearch / WebFetch (used for literature search)
-- Python 3 (only for `forest-plot.py`)
+- Python 3 + numpy, pandas, scipy, statsmodels, lifelines, matplotlib (for data analysis scripts)
 
 ## License
 
@@ -214,6 +218,7 @@ Private repository.
 
 ## Versions
 
+- **v2.1.0** (2026-02-17) — Data management & analysis integration, 4 new files
 - **v2.0.0** (2026-02-17) — Full lifecycle coverage, 16 new files, 10 phases
 - **v1.0.0** (2026-02-17) — Structural improvements, 6 new files, 5 paper types
 

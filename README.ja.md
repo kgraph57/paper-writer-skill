@@ -57,7 +57,7 @@ paper-writer/
 ├── README.md                          # 英語ドキュメント
 ├── README.ja.md                       # このファイル（日本語）
 │
-├── templates/                         # 30ファイル — セクション別テンプレート
+├── templates/                         # 31ファイル — セクション別テンプレート
 │   ├── project-init.md                # プロジェクト初期化（Original Article）
 │   ├── project-init-case.md           # プロジェクト初期化（Case Report）
 │   ├── literature-matrix.md           # 文献比較マトリクス
@@ -87,7 +87,9 @@ paper-writer/
 │   ├── highlights.md                  # Key Points / Highlights（JAMA, BMJ等）
 │   ├── limitations-guide.md           # Limitations記載ガイド
 │   ├── acknowledgments.md             # 謝辞テンプレート
-│   └── proof-correction.md            # 受理後の校正ガイド
+│   ├── proof-correction.md            # 受理後の校正ガイド
+│   ├── data-management.md             # データ管理（raw/processed/analysis）
+│   └── analysis-workflow.md           # データ解析ワークフローガイド
 │
 ├── references/                        # 27ファイル — リファレンス資料
 │   ├── imrad-guide.md                 # IMRAD構造と執筆原則
@@ -118,19 +120,21 @@ paper-writer/
 │   ├── journal-reformatting.md        # ジャーナル再フォーマット
 │   └── master-reference-list.md       # マスターURL一覧（100+リンク）
 │
-└── scripts/                           # 3ファイル — ユーティリティ
+└── scripts/                           # 5ファイル — ユーティリティ・解析
     ├── compile-manuscript.sh           # セクション統合スクリプト
     ├── word-count.sh                  # 語数カウント
-    └── forest-plot.py                 # フォレストプロット生成
+    ├── forest-plot.py                 # フォレストプロット生成
+    ├── table1.py                      # Table 1生成（ベースライン特性）
+    └── analysis-template.py           # 統計解析テンプレート（t検定、ロジスティック、生存分析）
 ```
 
-**合計: 62ファイル**（テンプレート30 + リファレンス27 + スクリプト3 + SKILL.md + CHANGELOG.md）
+**合計: 66ファイル**（テンプレート31 + リファレンス27 + スクリプト5 + SKILL.md + CHANGELOG.md + README.md）
 
 ## ワークフロー（10フェーズ）
 
 | Phase | 内容 | 主な操作 |
 |-------|------|----------|
-| **0** | プロジェクト初期化 | ジャーナル要件調査、報告ガイドライン選択、ディレクトリ生成 |
+| **0** | プロジェクト初期化 | ジャーナル要件調査、報告ガイドライン選択、ディレクトリ生成、データ管理・解析 |
 | **1** | 文献検索・整理 | PubMed/Google Scholar検索、文献マトリクス作成 |
 | **2** | アウトライン | 論文骨格の設計（ユーザー承認必須） |
 | **2.5** | 表・図 | 執筆前に表・図を設計 |
@@ -206,7 +210,7 @@ Claude Codeの設定に登録：
 
 - [Claude Code](https://claude.ai/code) CLI
 - WebSearch / WebFetch（文献検索に使用）
-- Python 3（`forest-plot.py` 使用時のみ）
+- Python 3 + numpy, pandas, scipy, statsmodels, lifelines, matplotlib（データ解析スクリプト用）
 
 ## ライセンス
 
@@ -214,6 +218,7 @@ Private repository.
 
 ## バージョン
 
+- **v2.1.0** (2026-02-17) — データ管理・解析統合、4ファイル追加
 - **v2.0.0** (2026-02-17) — 完全ライフサイクル対応、16ファイル追加、10フェーズ化
 - **v1.0.0** (2026-02-17) — 構造改善、6ファイル追加、5論文タイプ対応
 

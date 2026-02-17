@@ -1,5 +1,38 @@
 # Changelog
 
+## [2.1.0] - 2026-02-17
+
+### Data Management & Analysis Integration
+
+Added research data management and statistical analysis capabilities to the paper-writer skill.
+
+### New Files (4)
+
+| File | Description |
+|------|-------------|
+| `templates/data-management.md` | Data directory structure, README templates, de-identification checklist, file naming conventions |
+| `templates/analysis-workflow.md` | 6-step analysis workflow (data inspection → Table 1 → primary analysis → subgroup → figures → manuscript linking) |
+| `scripts/table1.py` | Table 1 generator — auto-detects variable types, Shapiro-Wilk normality test, group comparison with P values |
+| `scripts/analysis-template.py` | Statistical analysis template — descriptive stats, t-test/Mann-Whitney, logistic regression (uni+multi), Kaplan-Meier survival |
+
+### SKILL.md Updates
+
+| Update | Description |
+|--------|-------------|
+| **Step 0.4: Organize Research Data** | Data directory setup, data dictionary, de-identification workflow |
+| **Step 0.5: Data Analysis** | Python-based analysis workflow with scripts for Table 1, regression, survival analysis |
+| **Project directory structures** | Added `data/` directory (raw/processed/analysis) to both Original Article and Case Report templates |
+| **Reference Files list** | Added 4 new entries (data-management, analysis-workflow, table1.py, analysis-template.py) |
+
+### Summary
+
+- **66 files** total (31 templates, 27 references, 5 scripts, + SKILL.md, CHANGELOG.md, README.md, README.ja.md)
+- **Data pipeline**: raw/ → processed/ → analysis/ → tables/ + figures/
+- **Analysis types**: Table 1, descriptive stats, t-test, logistic regression, survival analysis, forest plot
+- **Python packages**: numpy, pandas, scipy, statsmodels, lifelines, matplotlib, seaborn
+
+---
+
 ## [2.0.0] - 2026-02-17
 
 ### Comprehensive Gap Analysis & Expansion

@@ -162,6 +162,50 @@ If the user has existing research data (clinical records, CSV files, statistical
 
 **Data flow:** `raw/` (never modify) → `processed/` (clean, de-identify) → `analysis/` (statistical output) → `tables/` and `figures/` (manuscript-ready)
 
+#### Step 0.5: Data Analysis
+
+If the user has quantitative data ready for analysis, Claude Code can execute Python scripts directly. Read `~/.claude/skills/paper-writer/templates/analysis-workflow.md` for the full workflow.
+
+**Available analysis scripts:**
+
+| Script | Purpose | Key Output |
+|--------|---------|------------|
+| `scripts/table1.py` | Table 1 (baseline characteristics) | Markdown table with N, %, mean±SD, P values |
+| `scripts/analysis-template.py` | Statistical analyses | Descriptive stats, t-test, logistic regression, survival |
+| `scripts/forest-plot.py` | Forest plot (meta-analysis) | PNG + SVG |
+
+**Workflow:**
+
+1. **Inspect data**: Load `data/processed/cohort_final.csv`, check shape, dtypes, missing values
+2. **Table 1**: Run `scripts/table1.py` to generate baseline characteristics table → `tables/table1.md`
+3. **Primary analysis**: Choose analysis type based on study design:
+   - Cross-sectional / case-control → logistic regression (OR with 95% CI)
+   - Cohort with time-to-event → survival analysis (Kaplan-Meier, log-rank)
+   - Continuous outcome → linear regression
+   - Group comparison → t-test / Mann-Whitney U
+4. **Subgroup & sensitivity analyses**: By sex, age group, disease severity, etc.
+5. **Generate figures**: Box plots, KM curves, forest plots, ROC curves
+6. **Link to manuscript**: Map analysis output to Results section paragraphs
+
+**Analysis output directory:** All results go to `data/analysis/`. Figures for the manuscript go to `figures/`.
+
+**Required Python packages:** `numpy`, `pandas`, `scipy`, `statsmodels`, `lifelines`, `matplotlib`, `seaborn`
+
+```bash
+pip install numpy pandas scipy statsmodels lifelines matplotlib seaborn scikit-learn
+```
+
+**Statistical reporting requirements** (before writing Results):
+- Effect sizes with 95% confidence intervals
+- P values to 3 decimal places (P < 0.001 for very small)
+- Statistical test names specified
+- Software and version documented
+- Two-sided tests (unless justified)
+- Multiple comparison correction (if >1 primary outcome)
+- Missing data handling described
+
+See `references/statistical-reporting-full.md` for detailed SAMPL guidelines and `templates/analysis-workflow.md` for step-by-step commands.
+
 ### Phase 1: Literature Search & Organization
 
 #### Step 1.1: Define Search Strategy
@@ -1072,3 +1116,6 @@ When the user invokes this skill on an existing project directory:
 - `references/reporting-guidelines-full.md` - Comprehensive reporting guidelines (20+ guidelines with checklists)
 - `references/master-reference-list.md` - Master reference list with URLs (all resources)
 - `templates/data-management.md` - Data management template (raw/processed/analysis, data dictionary, de-identification)
+- `templates/analysis-workflow.md` - Data analysis workflow guide (Table 1, regression, survival, figures)
+- `scripts/table1.py` - Table 1 generator (auto-detect variable types, normality test, group comparison)
+- `scripts/analysis-template.py` - Statistical analysis template (descriptive, t-test, logistic, survival)
