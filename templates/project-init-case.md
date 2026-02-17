@@ -30,6 +30,7 @@
 
 | Phase | Status | Last Updated |
 |-------|--------|-------------|
+| Data Organization | Not Started | - |
 | Literature Search | Not Started | - |
 | Outline | Not Started | - |
 | Tables & Figures | Not Started | - |
@@ -55,11 +56,19 @@
 | AI Disclosure | Pending | |
 | Author Contributions (CRediT) | Pending | |
 
-## Available Data
+## Data Management
+
+| Item | Value |
+|------|-------|
+| Clinical data location | `data/raw/` |
+| De-identified | {YES/NO/PENDING} |
+| Informed consent for images | {YES/NO/PENDING} |
 
 - Clinical data: {CLINICAL_DATA}
 - Images/Figures: {LIST_FIGURES}
 - Lab results: {LAB_RESULTS}
+
+See `templates/data-management.md` for directory structure and templates.
 
 ## Key Decisions Log
 

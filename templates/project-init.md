@@ -32,6 +32,7 @@
 
 | Phase | Status | Last Updated |
 |-------|--------|-------------|
+| Data Organization | Not Started | - |
 | Literature Search | Not Started | - |
 | Outline | Not Started | - |
 | Tables & Figures | Not Started | - |
@@ -58,11 +59,23 @@
 | AI Disclosure | {PENDING/DONE} | |
 | Author Contributions (CRediT) | {PENDING/DONE} | |
 
-## Available Data
+## Data Management
+
+| Item | Value |
+|------|-------|
+| Raw data location | `data/raw/` |
+| Data format | {CSV/XLSX/SPSS/STATA/OTHER} |
+| Records (N) | {N} |
+| De-identified | {YES/NO/PENDING} |
+| IRB approval # | {NUMBER} |
+| Analysis software | {R/STATA/SPSS/PYTHON/SAS} |
 
 - Tables: {LIST_TABLES}
 - Figures: {LIST_FIGURES}
 - Raw data: {DATA_DESCRIPTION}
+- Data dictionary: `data/data-dictionary.md`
+
+See `templates/data-management.md` for directory structure and templates.
 
 ## Key Decisions Log
 

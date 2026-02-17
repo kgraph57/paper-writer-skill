@@ -101,6 +101,11 @@ Read `~/.claude/skills/paper-writer/references/reporting-guidelines.md` (summary
 ├── 10_cover-letter.md           # Cover letter to editor
 ├── figures/                     # Figure files and captions
 ├── tables/                      # Table files
+├── data/                        # Research data (see templates/data-management.md)
+│   ├── raw/                     # Original data (READ-ONLY)
+│   ├── processed/               # Cleaned, de-identified data
+│   ├── analysis/                # Statistical output
+│   └── data-dictionary.md       # Variable definitions
 └── checklists/
     ├── section-quality.md       # Per-section quality checklist
     └── submission-ready.md      # Pre-submission checklist
@@ -125,6 +130,11 @@ Read `~/.claude/skills/paper-writer/references/reporting-guidelines.md` (summary
 ├── 08_cover-letter.md
 ├── figures/
 ├── tables/
+├── data/                        # Research data (see templates/data-management.md)
+│   ├── raw/
+│   ├── processed/
+│   ├── analysis/
+│   └── data-dictionary.md
 └── checklists/
     ├── section-quality.md
     └── submission-ready.md
@@ -133,6 +143,25 @@ Read `~/.claude/skills/paper-writer/references/reporting-guidelines.md` (summary
 Read `~/.claude/skills/paper-writer/templates/project-init.md` with the `Read` tool and use it to generate `README.md`. For Case Reports, use `project-init-case.md` instead.
 
 **File numbering follows the recommended writing order**, not the reading order. This is intentional.
+
+#### Step 0.4: Organize Research Data
+
+If the user has existing research data (clinical records, CSV files, statistical output, etc.):
+
+1. Create `data/raw/`, `data/processed/`, `data/analysis/` directories
+2. Read `~/.claude/skills/paper-writer/templates/data-management.md` for the full template
+3. Ask the user to place raw data files in `data/raw/` — these files are **READ-ONLY** from this point
+4. Create `data/raw/README.md` documenting the data source, extraction date, and IRB information
+5. Create `data/data-dictionary.md` listing all variables with types, ranges, and labels
+6. Confirm de-identification status — if not yet de-identified, create a processing plan in `data/processed/README.md`
+
+**Security rules:**
+- NEVER commit patient-identifiable data to git
+- Add `data/raw/*.csv`, `data/raw/*.xlsx` etc. to `.gitignore` if the repository is shared
+- Always confirm IRB approval number before proceeding with data analysis
+
+**Data flow:** `raw/` (never modify) → `processed/` (clean, de-identify) → `analysis/` (statistical output) → `tables/` and `figures/` (manuscript-ready)
+
 ### Phase 1: Literature Search & Organization
 
 #### Step 1.1: Define Search Strategy
@@ -1042,3 +1071,4 @@ When the user invokes this skill on an existing project directory:
 - `references/statistical-reporting-full.md` - Extended SAMPL statistical reporting guide
 - `references/reporting-guidelines-full.md` - Comprehensive reporting guidelines (20+ guidelines with checklists)
 - `references/master-reference-list.md` - Master reference list with URLs (all resources)
+- `templates/data-management.md` - Data management template (raw/processed/analysis, data dictionary, de-identification)
