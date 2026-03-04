@@ -1069,6 +1069,123 @@ When the user invokes this skill on an existing project directory:
 - 症例報告では「症例提示」「臨床経過」等の標準的な見出しを使用
 - 論文の書き方ガイドが別途ある場合は参照のこと
 
+## Team Mode（チームモード）
+
+ユーザーが「チームで」「team mode」「並列で」と指示した場合、各フェーズを並列エージェントで実行し、大幅に高速化する。
+
+### チーム構成
+
+| エージェント | 役割 | エージェント定義 | モデル |
+|------------|------|----------------|--------|
+| 文献検索 | DB別の並列論文検索 | `~/.claude/agents/paper-lit-searcher.md` | sonnet |
+| 表・図設計 | 表と図の並列設計 | `~/.claude/agents/paper-table-figure-planner.md` | sonnet |
+| セクション執筆 | 汎用セクション執筆 | `~/.claude/agents/paper-section-drafter.md` | sonnet |
+| ヒューマナイザー | AI文体パターン除去 | `~/.claude/agents/paper-humanizer.md` | haiku |
+| 参考文献 | 引用収集・検証 | `~/.claude/agents/paper-ref-builder.md` | sonnet |
+| セクションレビュー | セクション品質チェック | `~/.claude/agents/paper-section-reviewer.md` | sonnet |
+| 品質ゲート | 横断整合性の最終検証 | `~/.claude/agents/paper-quality-gate.md` | opus |
+
+### Phase別チームワークフロー
+
+#### Phase 0, 2: 逐次実行（変更なし）
+ユーザーとの対話が必要なため、既存フローのまま実行する。
+
+#### Phase 1: 文献検索（並列 x3）
+
+`paper-lit-searcher` を3つ**並列**でAgent toolから起動する：
+
+- Agent A: PubMed検索（MeSH用語使用）
+- Agent B: Google Scholar検索（フリーテキスト）
+- Agent C: ユーザー提供の重要論文レビュー + ドメイン固有DB（CiNii, EMBASE等）
+
+3エージェント完了後、リードが結果をマージし `00_literature/literature-matrix.md` を作成（重複除去）。
+
+#### Phase 2.5: 表・図（並列 x2）
+
+`paper-table-figure-planner` を2つ**並列**で起動：
+
+- Agent A: 表の設計（`tables/` に出力）
+- Agent B: 図の設計（`figures/` に出力）
+
+#### Phase 3: ドラフティング（グループ並列）
+
+`paper-section-drafter` を依存関係に基づいてラウンド実行する。
+
+**Original Article の場合:**
+- **Round 1**: Methods + Results（ペアリング執筆、1エージェント）
+- **Round 2**: Introduction P3 + Conclusion（並列 x2、ミラー関係）
+- **Round 3**: Discussion + Introduction P1-P2 + Abstract（並列 x3）
+- **Round 4**: Title（1エージェント）
+
+**Case Report の場合:**
+- **Round 1**: Case Presentation（逐次、ユーザーの臨床情報必要）
+- **Round 2**: Discussion + Introduction（並列 x2）
+- **Round 3**: Abstract + Title（並列 x2）
+
+**Systematic Review の場合:**
+- **Round 1**: Methods（逐次、最重要セクション）
+- **Round 2**: Results（逐次、Methods構造に依存）
+- **Round 3**: Discussion + Introduction + Abstract（並列 x3）
+- **Round 4**: Title（1エージェント）
+
+#### Phase 4: ヒューマナイズ（並列 x最大6）
+
+`paper-humanizer` をセクション数分**並列**で起動：
+
+- 各エージェントが1セクションを担当
+- 全エージェントが `references/humanizer-academic.md` を参照
+- 完了後、リードがPhase 4.4検証チェックリストを実行
+
+#### Phase 5: 参考文献（2段階）
+
+`paper-ref-builder` を2段階で実行：
+
+1. **Builder モード**: 全セクションから引用収集→ジャーナル形式でフォーマット
+2. **Verifier モード**: WebSearchで各文献の実在確認→捏造フラグ
+
+#### Phase 6: 品質レビュー（並列 + ゲート）
+
+**Round 1**: `paper-section-reviewer` をセクション数分**並列**で起動
+- 各エージェントが `references/section-checklist.md` に基づき評価
+
+**Round 2**: `paper-quality-gate` を1つ起動（opusモデル）
+- 全セクションの横断整合性を検証
+- PASS必須。FAILなら該当セクションを修正し再レビュー
+
+#### Phase 7: 投稿準備（並列 x4）
+
+`paper-section-drafter` を4つ**並列**で起動：
+
+- Agent A: タイトルページ（`templates/title-page.md` 参照）
+- Agent B: ハイライト / Key Points（`templates/highlights.md` 参照）
+- Agent C: 謝辞・宣言（`templates/acknowledgments.md` + `templates/declarations.md` 参照）
+- Agent D: カバーレター（`templates/cover-letter.md` 参照）
+
+完了後、`scripts/compile-manuscript.sh` で最終統合。
+
+#### Phase 8: リビジョン（並列 x3）
+
+レビュアーコメントのパース・カテゴリ分けは逐次（ユーザー対話）。その後：
+
+- Agent A (`paper-section-drafter`): Must Fix コメント対応
+- Agent B (`paper-section-drafter`): Should Fix コメント対応
+- Agent C (`paper-section-drafter`): 反論（Rebut）ドラフト作成
+
+完了後、修正セクションに Phase 4（ヒューマナイズ）と Phase 6（品質レビュー）を再実行。
+
+#### Phase 9-10: 逐次実行（変更なし）
+イベント駆動（プルーフ到着、リジェクション通知）のため既存フローのまま。
+
+### チームモードの使い分け
+
+| 場面 | 推奨モード |
+|------|-----------|
+| Original Article（多セクション） | チームモード |
+| Systematic Review（大量文献） | チームモード |
+| Case Report（少セクション） | 逐次モード |
+| Letter / Short Communication | 逐次モード |
+| 締め切りが迫っている場合 | チームモード |
+
 ## Reference Files
 
 - `references/imrad-guide.md` - IMRAD structure and writing principles
