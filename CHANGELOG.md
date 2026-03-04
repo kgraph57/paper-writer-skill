@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.0.0] - 2026-03-05
+
+### Team Mode: Parallel Agent Execution
+
+Added 7-agent team architecture for parallel execution across all phases. Invoke with "チームで" / "team mode" / "並列で".
+
+### New Agents (7)
+
+| Agent | Role | Model |
+|-------|------|-------|
+| `paper-lit-searcher` | Database-specific literature search (PubMed, Scholar, CiNii, etc.) | sonnet |
+| `paper-table-figure-planner` | Table and figure design from outline and data | sonnet |
+| `paper-section-drafter` | Generic section drafting (parameterized per section) | sonnet |
+| `paper-humanizer` | AI writing pattern detection and removal | haiku |
+| `paper-ref-builder` | Citation collection (builder mode) and verification (verifier mode) | sonnet |
+| `paper-section-reviewer` | Per-section quality check against section-checklist | sonnet |
+| `paper-quality-gate` | Cross-section consistency verification and final PASS/FAIL gate | opus |
+
+### SKILL.md Updates
+
+| Update | Description |
+|--------|-------------|
+| **Team Mode section** | Full team workflow documentation added before Reference Files section (+117 lines) |
+| **Phase 1 team** | 3 parallel literature searchers (PubMed, Scholar, domain DB) |
+| **Phase 2.5 team** | 2 parallel planners (tables + figures) |
+| **Phase 3 team** | Grouped parallel drafting by dependency (Methods+Results pair, Intro+Conclusion pair, etc.) |
+| **Phase 4 team** | Up to 6 parallel humanizers (one per section, haiku model) |
+| **Phase 6 team** | Parallel section reviewers + opus-level cross-section quality gate |
+| **Phase 7 team** | 4 parallel submission document assemblers |
+| **Phase 8 team** | 3 parallel revision handlers (Must Fix, Should Fix, Rebuttal) |
+
+### Summary
+
+- **7 agent definitions** installed to `~/.claude/agents/paper-*.md`
+- **Backup** at `Project/skills/agents/paper-team/`
+- **Model strategy**: haiku for pattern-matching (humanizer), sonnet for most work, opus for critical review (quality gate)
+- **Paper-type specific parallelization**: Original Article, Case Report, and Systematic Review each have optimized parallel drafting rounds
+
+---
+
 ## [2.1.0] - 2026-02-17
 
 ### Data Management & Analysis Integration

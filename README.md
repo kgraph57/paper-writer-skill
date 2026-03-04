@@ -218,6 +218,7 @@ Private repository.
 
 ## Versions
 
+- **v3.0.0** (2026-03-05) — Team Mode: 7 parallel agents for accelerated writing
 - **v2.1.0** (2026-02-17) — Data management & analysis integration, 4 new files
 - **v2.0.0** (2026-02-17) — Full lifecycle coverage, 16 new files, 10 phases
 - **v1.0.0** (2026-02-17) — Structural improvements, 6 new files, 5 paper types
