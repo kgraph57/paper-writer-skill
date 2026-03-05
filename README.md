@@ -81,28 +81,29 @@ Phases are parallelized with specialized agents running concurrently:
 
 ```mermaid
 flowchart TB
-    subgraph "Phase 1 — Literature Search (3 parallel)"
+    subgraph P1["Phase 1 — Literature Search (3 parallel)"]
         L1[PubMed Searcher]
         L2[Google Scholar Searcher]
         L3[Domain DB Searcher]
     end
-    subgraph "Phase 3 — Drafting (grouped parallel)"
-        D1[Methods Drafter]
-        D2[Results Drafter]
-        D3[Intro Drafter]
-        D4[Conclusion Drafter]
+
+    subgraph P3["Phase 3 — Drafting (grouped parallel)"]
+        direction LR
+        D1[Methods] --> D3[Intro]
+        D2[Results] --> D4[Conclusion]
     end
-    subgraph "Phase 4 — Humanize (up to 6 parallel)"
+
+    subgraph P4["Phase 4 — Humanize (up to 6 parallel)"]
         H1[Humanizer × N sections]
     end
-    subgraph "Phase 6 — Quality Review"
+
+    subgraph P6["Phase 6 — Quality Review"]
         R1[Section Reviewer ×N]
         R2[Quality Gate — opus]
     end
 
     L1 & L2 & L3 --> MERGE["Merge Matrix"]
     MERGE --> D1 & D2
-    D1 & D2 --> D3 & D4
     D3 & D4 --> H1
     H1 --> R1
     R1 --> R2

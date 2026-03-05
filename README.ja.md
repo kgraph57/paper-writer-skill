@@ -81,28 +81,29 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    subgraph "Phase 1 — 文献検索（3並列）"
+    subgraph P1["Phase 1 — 文献検索（3並列）"]
         L1[PubMed検索]
         L2[Google Scholar検索]
         L3[専門DB検索]
     end
-    subgraph "Phase 3 — 執筆（グループ並列）"
-        D1[Methods担当]
-        D2[Results担当]
-        D3[Introduction担当]
-        D4[Conclusion担当]
+
+    subgraph P3["Phase 3 — 執筆（グループ並列）"]
+        direction LR
+        D1[Methods] --> D3[Intro]
+        D2[Results] --> D4[Conclusion]
     end
-    subgraph "Phase 4 — ヒューマナイズ（最大6並列）"
+
+    subgraph P4["Phase 4 — ヒューマナイズ（最大6並列）"]
         H1[Humanizer × Nセクション]
     end
-    subgraph "Phase 6 — 品質レビュー"
+
+    subgraph P6["Phase 6 — 品質レビュー"]
         R1[セクションレビュー ×N]
         R2[品質ゲート — opus]
     end
 
     L1 & L2 & L3 --> MERGE["マトリクス統合"]
     MERGE --> D1 & D2
-    D1 & D2 --> D3 & D4
     D3 & D4 --> H1
     H1 --> R1
     R1 --> R2
