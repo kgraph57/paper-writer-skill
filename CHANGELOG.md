@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.1.0] - 2026-03-05
+
+### Autonomous Stage-Gate System
+
+Added autonomous quality loop: each phase has a gate that blocks progress until PASS. FAIL triggers automatic feedback → fix → re-check (max 3 iterations, then escalate to user).
+
+### 8 Gates
+
+| Phase | Gate | PASS Condition | Gate Agent | Fixer Agent |
+|-------|------|---------------|------------|-------------|
+| 1 | Literature quality | ≥10 papers, all DOIs valid | section-reviewer | lit-searcher |
+| 2 | Outline | All IMRAD sections, ≥2 citation mappings | section-reviewer | User escalation |
+| 2.5 | Tables/Figures | All design files complete | section-reviewer | table-figure-planner |
+| 3 | Section draft | Score ≥80%, Must Fix = 0 | section-reviewer | section-drafter |
+| 4 | Humanize | High-priority AI patterns = 0 | section-reviewer | humanizer |
+| 5 | References | Fabrication = 0, orphan citations = 0 | ref-builder (verifier) | ref-builder (builder) |
+| 6 | Cross-section | PASS or CONDITIONAL_PASS | quality-gate (opus) | section-drafter |
+| 7 | Submission prep | All required documents, word count OK | section-reviewer | section-drafter |
+
+### Agent Modifications (6 files)
+
+| Agent | Change |
+|-------|--------|
+| `paper-section-drafter` | Added `revision_mode` + `feedback_file` inputs; Step 0 for targeted fixes |
+| `paper-humanizer` | Added `revision_mode` + `feedback_file` inputs; Step 0 for pattern-specific fixes |
+| `paper-section-reviewer` | Added YAML verdict header (`gate_verdict`, `must_fix_count`, `score_percent`) |
+| `paper-quality-gate` | Added `affected_sections` to YAML header for targeted repair |
+| `paper-lit-searcher` | Added `revision_mode` for targeted re-search of gaps |
+| `paper-table-figure-planner` | Added `revision_mode` for targeted design fixes |
+
+### SKILL.md Updates
+
+- Added ~100 lines "Autonomous Stage-Gate System" subsection inside Team Mode
+- Gate flow diagram, feedback file format, revision_mode invocation template
+- Escalation protocol, YAML verdict format, parallel gate execution rules
+
 ## [3.0.0] - 2026-03-05
 
 ### Team Mode: Parallel Agent Execution

@@ -1186,6 +1186,127 @@ When the user invokes this skill on an existing project directory:
 | Letter / Short Communication | 逐次モード |
 | 締め切りが迫っている場合 | チームモード |
 
+### Autonomous Stage-Gate System（自律品質ゲート）
+
+チームモード時、各Phaseに品質ゲートを設ける。ゲートがFAILの場合、修正エージェントを自動再起動してPASSまでループする。最大3イテレーションでユーザーにエスカレーション。
+
+#### ゲートフロー
+
+```
+Phase N 完了 → [ゲートエージェント] → PASS? → 次のPhaseへ
+                                    → FAIL + iter<3 → FEEDBACK.md生成 → [修正エージェント(revision_mode)] → ゲートに戻る
+                                    → FAIL + iter≥3 → ユーザーにエスカレーション（checklists/escalation-log.md）
+```
+
+#### Phase別ゲート定義
+
+| Phase | ゲート名 | PASS条件 | ゲート担当 | 修正担当 |
+|-------|---------|---------|-----------|---------|
+| 1 | 文献品質 | ≥10論文、全DOI/URLあり、捏造なし | paper-section-reviewer | paper-lit-searcher |
+| 2 | アウトライン | 全IMRAD存在、≥2引用マッピング | paper-section-reviewer | ユーザーに即エスカレ |
+| 2.5 | 表・図 | 全設計ファイル完備、ジャーナル制限内 | paper-section-reviewer | paper-table-figure-planner |
+| 3 | セクション | score≥80%、Must Fix=0 | paper-section-reviewer | paper-section-drafter |
+| 4 | ヒューマナイズ | 高優先AIパターン残存0 | paper-section-reviewer | paper-humanizer |
+| 5 | 参考文献 | 捏造0、孤立引用0 | paper-ref-builder(verifier) | paper-ref-builder(builder) |
+| 6 | 横断整合 | PASS or CONDITIONAL_PASS | paper-quality-gate(opus) | paper-section-drafter |
+| 7 | 投稿準備 | 全必須書類あり、語数制限内 | paper-section-reviewer | paper-section-drafter |
+
+#### フィードバックファイル形式
+
+ゲートFAIL時、オーケストレーターが `checklists/feedback-{phase}-{section}.md` を生成する：
+
+```yaml
+---
+revision_mode: true
+iteration: {N} of 3
+section: {section_name}
+source_file: {path/to/section_file.md}
+gate_verdict: FAIL
+---
+```
+
+```markdown
+## Must Fix
+### Issue 1
+- item: {チェックリスト項目名}
+- location: {段落番号 or 行範囲}
+- problem: {問題の1文記述}
+- fix: {具体的な修正指示}
+
+## Should Fix
+### Issue 2
+- item: {項目名}
+- fix: {修正指示}
+
+## Context (変更不可)
+- reporting_guideline: {PRISMA等}
+- journal: {ジャーナル名}
+- language: {English/Japanese}
+```
+
+#### 修正エージェントの起動方法
+
+ゲートFAIL時、修正エージェントに以下を渡す：
+
+```
+revision_mode: true
+feedback_file: {project_dir}/checklists/feedback-{phase}-{section}.md
+source_file: {project_dir}/{section_file.md}
+```
+
+全修正エージェント（paper-section-drafter, paper-humanizer, paper-lit-searcher, paper-table-figure-planner）は `revision_mode: true` を受け取ると、フィードバックの Must Fix 項目のみを処理し、通常の初期ワークフローをスキップする。
+
+#### ゲート状態の永続化
+
+`checklists/gate-state.md` でイテレーション回数を管理：
+
+```markdown
+| Phase | Section | Iteration | Status | Last Run |
+|-------|---------|-----------|--------|----------|
+| phase3 | methods | 2 | IN_PROGRESS | 2026-03-05 |
+| phase4 | intro | 0 | PASS | 2026-03-05 |
+```
+
+#### エスカレーションプロトコル
+
+3イテレーション到達時：
+1. `checklists/escalation-log.md` に未解決の Must Fix 一覧と説明を記録
+2. ユーザーにメッセージ表示（該当ファイルパスと問題点を明示）
+3. ワークフローを一時停止
+4. ユーザーが手動修正後「continue」で再開 → イテレーションカウンターを0にリセット
+
+#### YAML verdict によるループ判定
+
+section-reviewer と quality-gate は出力ファイル冒頭にYAMLヘッダを付与する：
+
+```yaml
+# section-reviewer
+---
+gate_verdict: PASS | FAIL
+must_fix_count: {N}
+score_percent: {N}
+section: {name}
+---
+
+# quality-gate
+---
+gate_verdict: PASS | CONDITIONAL_PASS | FAIL
+must_fix_count: {N}
+affected_sections: [methods, results]
+---
+```
+
+オーケストレーターはYAMLヘッダのみ読み取ってループ継続/終了を判定する。CONDITIONAL_PASS（Should Fixのみ残存）はPASS扱い。
+
+#### 並列ゲート実行
+
+一部のゲートは並列実行可能：
+- **Phase 3**: Methods+Results ペア ‖ Introduction+Conclusion ペア（Discussion は独立）
+- **Phase 4**: 全セクションのヒューマナイズゲートを同時実行
+- **Phase 6**: 全セクションレビューの後に quality-gate（順序依存）
+
+Abstract のゲートは全セクション PASS 後に実行（他セクションの数値に依存するため）。
+
 ## Reference Files
 
 - `references/imrad-guide.md` - IMRAD structure and writing principles

@@ -6,11 +6,117 @@ A Claude Code skill for medical/scientific paper writing. Covers the entire manu
 
 ## Overview
 
-```
-Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → Pre-Submission → [Revision] → [Post-Acceptance] → [Rejection → Resubmission]
+A **10-phase** pipeline that generates and manages IMRAD-format project directories with structured Markdown files, a literature matrix, and quality checklists.
+
+```mermaid
+graph LR
+    P1[1. Literature Search] --> P2[2. Outline]
+    P2 --> P25[2.5 Tables/Figures]
+    P25 --> P3[3. Draft]
+    P3 --> P4[4. Humanize]
+    P4 --> P5[5. References]
+    P5 --> P6[6. Quality Review]
+    P6 --> P7[7. Pre-Submission]
+    P7 --> P8["8. Revision ①"]
+    P8 --> P9["9. Post-Acceptance"]
+    P7 -.-> P10["10. Rejection → Resubmit"]
+    P10 -.-> P1
 ```
 
-A **10-phase** pipeline that generates and manages IMRAD-format project directories with structured Markdown files, a literature matrix, and quality checklists.
+## Architecture: Autonomous Stage-Gate System (v3.1)
+
+Every phase is guarded by a quality gate. If the gate returns **FAIL**, the system automatically generates structured feedback, dispatches a fixer agent in `revision_mode`, and re-checks — up to 3 iterations before escalating to the user. No phase proceeds until its gate returns **PASS**.
+
+```mermaid
+flowchart TD
+    subgraph "Per-Phase Loop (max 3 iterations)"
+        A["Phase N Complete"] --> B{"Quality Gate"}
+        B -->|PASS| C["→ Phase N+1"]
+        B -->|FAIL iter < 3| D["Generate feedback.md"]
+        D --> E["Fixer Agent\n(revision_mode)"]
+        E --> B
+        B -->|FAIL iter ≥ 3| F["⚠ Escalate to User"]
+    end
+
+    style B fill:#f9a825,stroke:#f57f17,color:#000
+    style C fill:#66bb6a,stroke:#388e3c,color:#fff
+    style F fill:#ef5350,stroke:#c62828,color:#fff
+```
+
+### 8 Quality Gates
+
+```mermaid
+flowchart LR
+    subgraph "Phase 1"
+        G1["📚 Literature\n≥10 papers\nAll DOIs valid"]
+    end
+    subgraph "Phase 2"
+        G2["📋 Outline\nAll IMRAD sections\n≥2 citations mapped"]
+    end
+    subgraph "Phase 2.5"
+        G25["📊 Tables/Figures\nAll designs complete\nJournal limits OK"]
+    end
+    subgraph "Phase 3"
+        G3["✍️ Section Draft\nScore ≥80%\nMust Fix = 0"]
+    end
+    subgraph "Phase 4"
+        G4["🔍 Humanize\nHigh-priority\nAI patterns = 0"]
+    end
+    subgraph "Phase 5"
+        G5["📖 References\nFabrication = 0\nOrphan cites = 0"]
+    end
+    subgraph "Phase 6"
+        G6["🔗 Cross-Section\nPASS or\nCONDITIONAL_PASS"]
+    end
+    subgraph "Phase 7"
+        G7["📦 Submission\nAll docs ready\nWord count OK"]
+    end
+
+    G1 --> G2 --> G25 --> G3 --> G4 --> G5 --> G6 --> G7
+```
+
+### Team Mode: 7 Parallel Agents (v3.0)
+
+Phases are parallelized with specialized agents running concurrently:
+
+```mermaid
+flowchart TB
+    subgraph "Phase 1 — Literature Search (3 parallel)"
+        L1[PubMed Searcher]
+        L2[Google Scholar Searcher]
+        L3[Domain DB Searcher]
+    end
+    subgraph "Phase 3 — Drafting (grouped parallel)"
+        D1[Methods Drafter]
+        D2[Results Drafter]
+        D3[Intro Drafter]
+        D4[Conclusion Drafter]
+    end
+    subgraph "Phase 4 — Humanize (up to 6 parallel)"
+        H1[Humanizer × N sections]
+    end
+    subgraph "Phase 6 — Quality Review"
+        R1[Section Reviewer ×N]
+        R2[Quality Gate — opus]
+    end
+
+    L1 & L2 & L3 --> MERGE["Merge Matrix"]
+    MERGE --> D1 & D2
+    D1 & D2 --> D3 & D4
+    D3 & D4 --> H1
+    H1 --> R1
+    R1 --> R2
+```
+
+| Agent | Role | Model |
+|-------|------|-------|
+| `paper-lit-searcher` | Database-specific literature search | sonnet |
+| `paper-table-figure-planner` | Table and figure design | sonnet |
+| `paper-section-drafter` | Section drafting (parameterized) | sonnet |
+| `paper-humanizer` | AI writing pattern removal | haiku |
+| `paper-ref-builder` | Citation collection and verification | sonnet |
+| `paper-section-reviewer` | Per-section quality check | sonnet |
+| `paper-quality-gate` | Cross-section consistency + final verdict | opus |
 
 ## Supported Paper Types
 
@@ -218,7 +324,8 @@ Private repository.
 
 ## Versions
 
-- **v3.0.0** (2026-03-05) — Team Mode: 7 parallel agents for accelerated writing
+- **v3.1.0** (2026-03-05) — Autonomous Stage-Gate System: 8 quality gates with auto-fix loops
+- **v3.0.0** (2026-03-05) — Team Mode: 7 parallel agents for concurrent execution
 - **v2.1.0** (2026-02-17) — Data management & analysis integration, 4 new files
 - **v2.0.0** (2026-02-17) — Full lifecycle coverage, 16 new files, 10 phases
 - **v1.0.0** (2026-02-17) — Structural improvements, 6 new files, 5 paper types
