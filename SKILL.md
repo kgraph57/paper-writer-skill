@@ -1,6 +1,7 @@
 ---
 name: paper-writer
 description: "Medical/scientific paper writing workflow skill. Manages the full pipeline from literature search to submission-ready manuscript. Creates and manages a project directory with IMRAD-format section files, literature matrix, reference management, and quality checklists. Supports both English and Japanese papers. Triggers: 'write paper', 'paper-write', 'start manuscript', '論文を書く', '論文執筆', '論文プロジェクト', 'manuscript', 'research paper', '原稿作成'."
+context: fork
 ---
 
 # Paper Writer Skill
@@ -356,6 +357,68 @@ For the 3-5 most important papers, create individual notes in `00_literature/key
 - Key results with exact numbers
 - How it relates to the current paper
 - What gap it leaves (that our paper addresses)
+
+### Phase 1.5: Screening Execution (Systematic Review only)
+
+**Applies only to Systematic Reviews.** Skip for all other paper types.
+
+Phase 1 builds a search; Phase 3-D writes the PRISMA Methods/Results. Between
+them sits the actual study selection — dedup, dual screening, and the record
+counts that fill the PRISMA flow diagram. This phase runs that pipeline.
+
+Read `~/.claude/skills/paper-writer/templates/sr-screening-pipeline.md` with the
+`Read` tool for the full procedure. In brief:
+
+1. **Prerequisite — registered protocol.** Eligibility criteria must exist in
+   `00_literature/protocol.md` (from `templates/sr-prospero.md`) and the
+   protocol must be registered (PROSPERO) BEFORE screening. Do not start
+   otherwise.
+
+2. **Stage 1 — De-duplicate (deterministic).** Place raw DB exports in
+   `00_literature/screening/00_imported/` (one file per database), then run:
+   ```bash
+   python ~/.claude/skills/paper-writer/scripts/sr-dedup.py \
+     --input 00_literature/screening/00_imported \
+     --output 00_literature/screening/01_deduplicated.csv \
+     --counts 00_literature/screening/counts/identification.json
+   ```
+
+3. **Stage 2 — Title/Abstract screening (DUAL).** Spawn **two independent
+   screener passes** (Agent tool, or team mode) that cannot see each other's
+   decisions; each judges include/exclude/unclear against `protocol.md` only.
+   Reconcile into `02_title_abstract_screen.csv`; surface every conflict to the
+   user. **An LLM is one arm of a dual review, never the sole arbiter.**
+
+4. **Stage 3 — Full-text screening (DUAL).** Link PDFs to records, then run two
+   independent full-text passes:
+   ```bash
+   python ~/.claude/skills/paper-writer/scripts/sr-pdf-link.py \
+     --pdfs 00_literature/screening/full-texts \
+     --records 00_literature/screening/02_title_abstract_screen.csv \
+     --include-only --rename
+   ```
+   Every full-text exclude carries a PRISMA reason category. Write
+   `03_fulltext_screen.csv`; the human resolves all conflicts.
+
+5. **Stage 4 — Extraction hand-off.** For each included study, create one
+   `extraction/{record_id}.md` from `templates/sr-data-extraction.md` (dual,
+   no guessing — `NR`/`N/A` only).
+
+6. **Produce PRISMA numbers (deterministic).**
+   ```bash
+   python ~/.claude/skills/paper-writer/scripts/sr-prisma-count.py \
+     --identification 00_literature/screening/counts/identification.json \
+     --ta 00_literature/screening/02_title_abstract_screen.csv \
+     --ft 00_literature/screening/03_fulltext_screen.csv \
+     --output 00_literature/screening/counts/prisma-summary.md
+   ```
+   Copy the counts into `templates/sr-prisma-flow.md` and the Cohen's κ values
+   into the Methods selection-process paragraph (Phase 3-D, item 5).
+
+**Team mode:** the two screening passes per stage are naturally parallel — run
+them as two concurrent agents, each given only `protocol.md` + the records, then
+reconcile. κ < 0.6 means the criteria are ambiguous: revise `protocol.md` and
+re-screen rather than proceeding.
 
 ### Phase 2: Outline
 
@@ -1429,6 +1492,10 @@ Abstract のゲートは全セクション PASS 後に実行（他セクショ�
 - `templates/cover-letter.md` - Cover letter template
 - `templates/submission-ready.md` - Pre-submission checklist template
 - `templates/sr-outline.md` - Systematic review outline (PRISMA 2020)
+- `templates/sr-screening-pipeline.md` - SR screening execution (dedup → dual TA → dual FT → extraction → PRISMA counts); Phase 1.5
+- `scripts/sr-dedup.py` - Deterministic de-duplication of RIS/NBIB/BibTeX/CSV exports + identification counts
+- `scripts/sr-pdf-link.py` - Link full-text PDFs to records by DOI, rename to canonical names (originals untouched)
+- `scripts/sr-prisma-count.py` - Compute PRISMA flow numbers + Cohen's κ + internal-consistency checks from stage CSVs
 - `templates/declarations.md` - Declarations templates (Ethics, COI, Funding, AI, CRediT)
 - `templates/graphical-abstract.md` - Graphical abstract design guide
 - `references/ai-disclosure.md` - AI tool disclosure guide (ICMJE 2023)

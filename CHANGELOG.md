@@ -1,5 +1,40 @@
 # Changelog
 
+## [3.3.0] - 2026-06-07
+
+### SR Screening Execution Pipeline (Phase 1.5)
+
+Added the missing connective tissue between the SR protocol (`sr-prospero.md`)
+and the extraction form (`sr-data-extraction.md`): the executable study-selection
+pipeline that produces the numbers filling the PRISMA flow diagram. Inspired by
+the public "Claude Code 103 for Academic Researchers" SR pipeline, but
+re-architected for rigor: **dual independent screening** (an LLM is one arm of a
+two-reviewer process, never the sole arbiter), Cohen's κ inter-rater reliability,
+mandatory human conflict resolution, and deterministic counting.
+
+| File | Type | Purpose |
+|------|------|---------|
+| `templates/sr-screening-pipeline.md` | New template | 4-stage workflow (dedup → dual TA → dual FT → extraction), dual-review rules, PRISMA hand-off |
+| `scripts/sr-dedup.py` | New script | Parse RIS/NBIB/BibTeX/CSV; DOI + fuzzy-title de-dup; identification counts |
+| `scripts/sr-pdf-link.py` | New script | Extract DOI from PDFs, join to records, canonical rename (originals never destroyed) |
+| `scripts/sr-prisma-count.py` | New script | PRISMA flow counts + Cohen's κ (TA/FT) + 8 internal-consistency checks |
+
+### SKILL.md Updates
+
+- New **Phase 1.5: Screening Execution (Systematic Review only)** between Phase 1
+  (Literature Search) and Phase 2 (Outline)
+- Registered the four new files in the Reference Files list
+- All three scripts smoke-tested on synthetic fixtures (6→4 dedup, κ computation,
+  PDF DOI-match/rename, all consistency checks PASS)
+
+### Design Note — No Duplication
+
+Existing SR templates (`sr-prospero`, `sr-data-extraction`, `sr-prisma-flow`,
+`sr-rob`, `sr-grade`, `sr-outline`) already cover protocol, extraction form,
+flow figure, risk of bias, GRADE, and prose. This release adds ONLY the
+execution layer that generates the screening decisions and counts those
+templates consume.
+
 ## [3.2.0] - 2026-03-05
 
 ### Research Project Folder Management
