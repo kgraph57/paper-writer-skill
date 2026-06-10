@@ -13,10 +13,37 @@ Full-pipeline academic paper writing assistant. From literature search to submis
 This skill manages the entire paper writing workflow:
 
 ```
-Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → Pre-Submission → [Revision] → [Post-Acceptance] → [Rejection → Resubmission]
+[Discovery] → Literature Search → Outline → Tables/Figures → Draft → Humanize → References → Quality Review → [Adversarial Review] → Pre-Submission → [Revision] → [Post-Acceptance] → [Rejection → Resubmission]
 ```
 
 Each paper is a **project directory** containing structured Markdown files for every section, a literature matrix, and quality checklists.
+
+### AI-for-Science Operating Model
+
+This skill is not only a *manuscript factory* (write → format → submit). It is a
+*research engine* that wraps the writing pipeline in a discovery loop and names the
+two things only a human can supply. **Before doing anything else, read
+`~/.claude/skills/paper-writer/references/ai-for-science-model.md`** — it defines:
+
+- **The two human-sovereign inputs.** 💡 **IDEA** (what is worth asking, what it
+  means, what is ethical) and 📊 **DATA** (real, IRB-approved, never
+  machine-originated). AI proposes and executes everything else at full power; the
+  human owns exactly these two gates. AI must never originate a data point,
+  participant, or result.
+- **The loop.** Phase −1 Discovery (hypothesis → novelty → design → pre-registration
+  lock) feeds the existing pipeline; Phase 6.5 Adversarial Review red-teams the
+  central claim before any journal sees it. A red-team KILL sends the project back
+  to Discovery — that is the system working.
+- **The three integrity guardrails** that make AI-accelerated research *more*
+  rigorous, not less: **pre-registration** (anti-HARKing), **novelty check**
+  (anti-reinvention/inflation), **adversarial self-review** (anti-slop). Each
+  prevents a documented frontier failure mode.
+- **The autonomy dial** (Manual / Co-pilot / Autopilot). Hard rule for clinical
+  work: the 💡 IDEA gate, the 📊 DATA gate, and the pre-registration lock are
+  **never** autopilot.
+
+The rest of this document is the execution detail. When a phase touches a sovereign
+gate, stop and get the human; everywhere else, run at full power.
 
 ### Supported Paper Types
 
@@ -30,6 +57,73 @@ Each paper is a **project directory** containing structured Markdown files for e
 | **Study Protocol** | SPIRIT-compliant | SPIRIT 2025 | For trial registration papers |
 
 ## Workflow
+
+### Phase −1: Discovery (the research engine)
+
+**This phase is what separates a research engine from a manuscript factory.** The
+rest of the skill assumes the research question and the data already exist. Phase −1
+produces them — a novelty-checked, powered, pre-registered study plan — *before*
+Project Init. Read `~/.claude/skills/paper-writer/references/ai-for-science-model.md`
+first for the operating model.
+
+**Phase −1 is re-enterable — enter at the first guardrail not yet passed.** It is
+not all-or-nothing: a study that already has a sharpened question (but no novelty
+check, power, or pre-registration) enters *mid-chain*, not at the forge. Route by
+the **Phase −1 entry matrix**:
+
+| What the user arrives with | Enter at | How |
+|---|---|---|
+| **(a)** A raw clinical observation | **−1.1 Forge** | Run `templates/research-question.md` in **Mode A** (forge a question from the spark), then continue −1.2 → −1.3 → −1.4 in order. |
+| **(b)** An existing question / advanced protocol, **pre-data** | **−1.2 Novelty** | Run `templates/research-question.md` in **Mode B** (resume/refine — back-fill PECO, single Attack pass, FINER) first, then **−1.2 novelty**, then **−1.3 design as an AUDIT of the existing protocol** (not a fresh draft — check it against `templates/study-design.md`, fix gaps), then **−1.4 prereg**, then **run `references/adversarial-review.md` in design-stage mode (§0, pre-data) BEFORE the pre-registration lock** so cheap design fixes land before freezing. |
+| **(c)** Question + design + data all locked | **Skip to Phase 0** | Pure writing-up. Still confirm the 💡 IDEA and 📊 DATA gates are human-owned and that a pre-registration exists or is consciously waived (and disclosed as such). |
+
+**−1.2 novelty is the mandatory minimum entry for any unpublished study** — novelty
+cannot be assumed from the fact that a protocol is already being written. Only path
+(c) (already locked + data in hand) may skip it.
+
+Start the project's accountability ledger now: create
+`log/human-loop-ledger.md` from `~/.claude/skills/paper-writer/templates/human-loop-ledger.md`
+and declare the autonomy mode (Manual / Co-pilot / Autopilot). Record every gate
+decision in it from here on.
+
+#### Step −1.1: Forge the research question (💡 IDEA gate)
+
+Read `~/.claude/skills/paper-writer/templates/research-question.md`. From the user's
+clinical observation, generate 5–15 candidate questions, debate and rank them by
+FINER, evolve the top 2–3 — then **stop and have the human select**. AI never
+auto-selects the question. Output: one sharpened research question with its PICO.
+
+#### Step −1.2: Novelty check (guardrail: anti-reinvention)
+
+Read `~/.claude/skills/paper-writer/references/novelty-check.md`. Run a live-literature
+sweep on the selected question using the **real literature tools** (PubMed MCP,
+OpenAlex, Europe PMC, Semantic Scholar — see Phase 1 plumbing). Classify the gap:
+genuinely novel / incremental / already-answered / contested. An already-answered
+question is killed here at near-zero cost. Do not inflate novelty — that is the
+Sakana v2 failure mode.
+
+#### Step −1.3: Design the study & power it
+
+Read `~/.claude/skills/paper-writer/templates/study-design.md`. Choose the design,
+operationalize every PICO element into a measured variable, define the single
+primary outcome, map confounders with a DAG, and run a sample-size/power
+calculation (justify the effect size from the novelty-check literature, not from
+hope). Check feasibility against the clinic's real volume. This design becomes both
+the pre-registration and, later, the Methods section.
+
+#### Step −1.4: Pre-register & lock (guardrail: anti-HARKing)
+
+Read `~/.claude/skills/paper-writer/templates/preregistration.md`. Freeze the
+hypotheses and the primary analysis plan (OSF / UMIN-CTR / jRCT / PROSPERO) **before
+the 📊 DATA gate**. After the lock: pre-registered analyses are confirmatory;
+everything else is exploratory and labeled as such. This is the integrity backbone
+for publishing under your own name. For retrospective data, register before
+examining outcome data and disclose the data's pre-existence honestly.
+
+**The 📊 DATA gate:** only after the plan is locked does the human supply real,
+IRB-approved data. AI never originates data. Proceed to Phase 0.
+
+---
 
 ### Phase 0: Project Initialization
 
@@ -316,26 +410,35 @@ Create `00_literature/search-strategy.md` with:
 - **Inclusion/exclusion criteria** for papers
 - **Date range**
 
-**How to search:**
+**How to search — use REAL literature tools, not plain web search.**
 
-Use `WebSearch` with targeted queries:
-- For PubMed: search `"search terms" pediatric asthma pubmed`
-- For Google Scholar: search `"search terms" site:scholar.google.com`
-- For general: search the research question directly
+This skill runs in an environment with a real PubMed MCP and research APIs. These
+return structured, verifiable records (PMID, DOI, authors, abstract) — use them as
+the primary path. Plain `WebSearch` is a fallback, not the default.
 
-If WebSearch results are limited, use `WebFetch` on specific PubMed URLs:
-```
-https://pubmed.ncbi.nlm.nih.gov/?term=search+terms&sort=date
-```
+**Primary: PubMed MCP** (biomedical, authoritative). Build the query with
+`references/pubmed-query-builder.md`, then:
+- `mcp__claude_ai_PubMed__search_articles` — run the MeSH + free-text query
+- `mcp__claude_ai_PubMed__get_article_metadata` — pull structured metadata per PMID
+- `mcp__claude_ai_PubMed__find_related_articles` — snowball from a key seed paper
+- `mcp__claude_ai_PubMed__lookup_article_by_citation` — resolve a citation to a PMID/DOI
+- `mcp__claude_ai_PubMed__get_full_text_article` — fetch full text where available
 
-**Important**: WebSearch may not reliably return PubMed results with `site:` filtering. If results are poor, try broader searches and filter manually, or ask the user to provide key papers they already know.
+**Supplementary APIs** (broader coverage; fetch via `WebFetch` / `firecrawl_scrape` / `tavily_search`):
+- **OpenAlex** — `https://api.openalex.org/works?search=...` (filter by year, cited_by_count)
+- **Europe PMC** — `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=...&format=json` (full text, preprints)
+- **Semantic Scholar** — `https://api.semanticscholar.org/graph/v1/paper/search?query=...` (citation graph, influential-citation counts)
+- **Cochrane / PROSPERO / Epistemonikos** — check for existing or in-progress systematic reviews
 
-**Practical reality**: AI-based literature search has significant limitations. The most reliable workflow is:
-1. Ask the user to provide their 3-5 key papers (they usually know them already)
-2. Use WebSearch to supplement with additional relevant papers
-3. Use `references/pubmed-query-builder.md` to construct proper PubMed queries
-4. Have the user validate the final literature list for completeness
-5. Verify every AI-found citation exists (see `references/citation-verification.md`)
+**Why this matters**: structured-record retrieval means every paper carries a real
+PMID/DOI, so the "is this citation fabricated?" risk drops sharply versus
+free-text web search. Still verify per `references/citation-verification.md`.
+
+**Workflow:**
+1. Ask the user for their 3–5 key papers (they usually know them) — use these as snowball seeds for `find_related_articles`
+2. Run the PubMed MCP query; supplement with OpenAlex / Europe PMC / Semantic Scholar for non-PubMed and preprint coverage
+3. De-duplicate by DOI; have the user validate the final list for completeness
+4. Verify every citation resolves to a real record (`references/citation-verification.md`)
 
 #### Step 1.2: Build Literature Matrix
 
@@ -891,7 +994,7 @@ Build `references/09_references.md` (or `references/07_references.md` for Case R
 2. Format according to target journal style captured in Phase 0 (Vancouver, APA, etc.)
 3. Number sequentially as cited
 4. Verify completeness: every reference is cited in text, every citation has a reference entry
-5. **Verify authenticity**: For EVERY AI-suggested reference, confirm the paper exists via `WebSearch` with the exact title. AI frequently fabricates plausible-sounding citations.
+5. **Verify authenticity**: For EVERY AI-suggested reference, confirm the paper exists against a structured record — `mcp__claude_ai_PubMed__lookup_article_by_citation` or `mcp__claude_ai_PubMed__get_article_metadata` (by PMID/DOI), falling back to CrossRef (`https://api.crossref.org/works/{DOI}`) and `WebSearch` on the exact title for non-PubMed sources. AI frequently fabricates plausible-sounding citations; a citation that does not resolve to a real PMID/DOI is removed or replaced. See `references/citation-verification.md`.
 
 ### Phase 6: Quality Review
 
@@ -912,6 +1015,35 @@ Run the quality checklist against each section. Update `checklists/section-quali
 - [ ] AI writing patterns removed (Phase 4 verification passed)
 - [ ] Consistent terminology throughout all sections
 - [ ] Ethics approval and informed consent documented
+
+### Phase 6.5: Adversarial Review (red-team the claim)
+
+**Before any journal's red team sees the paper, run your own.** Quality Review
+(Phase 6) checks that the manuscript is internally consistent and well-formatted.
+This phase checks something different and harder: **is the central claim actually
+true and supported?** It is the corrective to the Sakana v2 failure mode (nothing in
+that loop tried to make the paper fail, so hallucinations and novelty inflation
+shipped).
+
+Read `~/.claude/skills/paper-writer/references/adversarial-review.md`. Run a hostile
+internal panel that attacks the central claim from four angles, plus a
+"steelman the null" pass:
+
+1. **Statistical reviewer** — p-hacking, multiplicity, power, post-hoc subgroups; does every confirmatory claim trace to the pre-registered plan (`templates/preregistration.md`)?
+2. **Methodological reviewer** — confounding, selection/information bias, the DAG; is each causal-sounding claim supported by the design?
+3. **Novelty reviewer** — re-attack the novelty claim against `references/novelty-check.md`; has a larger/better study already shown this?
+4. **Integrity / clinical reviewer** — every number traces to raw data (📊 gate), citations are real, no overclaiming, no clinical harm if a reader acts on the conclusion.
+5. **Steelman the null** — argue as hard as possible that the finding is chance, confounding, or bias; does the paper already answer that argument?
+
+**Verdict:** KILL (claim not supported → return to Phase −1 Discovery; this is the
+system working, not a failure) / MAJOR / MINOR / PASS. **The human owns the final
+KILL/PASS adjudication (💡 gate)** — the AI panel advises. Record the verdict in
+`log/human-loop-ledger.md`. Only a PASS proceeds to Pre-Submission.
+
+In team mode, run the four reviewers as four parallel `paper-red-team` agents (opus,
+distinct lenses) and synthesize the verdict. A KILL or MAJOR loops back: fix the
+affected sections, then re-run Phase 4 (Humanize) and Phase 6 (Quality) before
+re-entering Phase 6.5.
 
 ### Phase 7: Pre-Submission
 
@@ -1247,6 +1379,7 @@ When the user invokes this skill on an existing project directory:
 | 参考文献 | 引用収集・検証 | `~/.claude/agents/paper-ref-builder.md` | sonnet |
 | セクションレビュー | セクション品質チェック | `~/.claude/agents/paper-section-reviewer.md` | sonnet |
 | 品質ゲート | 横断整合性の最終検証 | `~/.claude/agents/paper-quality-gate.md` | opus |
+| レッドチーム | 中心的主張の敵対的科学レビュー（Phase 6.5） | `~/.claude/agents/paper-red-team.md` | opus |
 
 ### Phase別チームワークフロー
 
@@ -1314,6 +1447,17 @@ When the user invokes this skill on an existing project directory:
 **Round 2**: `paper-quality-gate` を1つ起動（opusモデル）
 - 全セクションの横断整合性を検証
 - PASS必須。FAILなら該当セクションを修正し再レビュー
+
+#### Phase 6.5: 敵対的レビュー（並列 x4 + 統合）
+
+`paper-red-team`（opus）を4つ**並列**で起動し、それぞれ異なる観点から中心的主張を攻撃する：
+
+- Agent A: 統計レビュアー（p-hacking・多重比較・検出力・事前登録への追跡可能性）
+- Agent B: 方法論レビュアー（交絡・バイアス・DAG・因果主張の妥当性）
+- Agent C: 新規性レビュアー（`references/novelty-check.md` に照らし新規性を再攻撃）
+- Agent D: 整合性・臨床レビュアー（生データ追跡・引用実在・過剰主張・臨床的害）
+
+4エージェント完了後、リードが統合し steelman-the-null を実施、判定（KILL/MAJOR/MINOR/PASS）を出す。**KILL/MAJOR の最終裁定は人間（💡ゲート）。** KILL は Phase −1 へ差し戻し（システムが機能した証拠）。PASS のみ Phase 7 へ。
 
 #### Phase 7: 投稿準備（並列 x4）
 
@@ -1471,6 +1615,19 @@ affected_sections: [methods, results]
 Abstract のゲートは全セクション PASS 後に実行（他セクションの数値に依存するため）。
 
 ## Reference Files
+
+### AI-for-Science layer (Phase −1 Discovery + Phase 6.5 Adversarial Review)
+
+- `references/ai-for-science-model.md` - **Read first.** Operating model: the two human-sovereign inputs (💡 IDEA, 📊 DATA), the discovery loop, the three integrity guardrails, the autonomy dial
+- `templates/research-question.md` - Phase −1 hypothesis forge (clinical observation → FINER-scored candidates → human selects)
+- `references/novelty-check.md` - Live-literature novelty sweep via real APIs (PubMed MCP, OpenAlex, Europe PMC, Semantic Scholar); four-verdict gap classification
+- `templates/study-design.md` - Design selection, PICO→variables, DAG/confounding, sample-size/power, pre-specified analysis plan
+- `templates/preregistration.md` - Pre-registration lock (anti-HARKing): registry selection, fillable record, confirmatory/exploratory firewall, deviations log
+- `references/adversarial-review.md` - Phase 6.5 red-team: four hostile reviewers + steelman-the-null; KILL/MAJOR/MINOR/PASS verdict
+- `templates/human-loop-ledger.md` - Accountability ledger (💡/📊/🤖 decision tagging) → rolls up into AI-disclosure + CRediT
+- agent `paper-red-team` (`~/.claude/agents/paper-red-team.md`, opus) - Adversarial reviewer for team mode
+
+### Core writing layer
 
 - `references/imrad-guide.md` - IMRAD structure and writing principles
 - `references/section-checklist.md` - per-section quality checklist (Original Article + Case Report)

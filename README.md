@@ -6,17 +6,30 @@ A Claude Code skill for medical/scientific paper writing. Covers the entire manu
 
 ## Overview
 
-A **10-phase** pipeline that generates and manages IMRAD-format project directories with structured Markdown files, a literature matrix, and quality checklists.
+Not just a *manuscript factory* (write → format → submit) but a *research engine*:
+a discovery loop that generates and ranks research questions, checks their novelty
+against the live literature, designs and powers the study, locks a pre-registered
+plan, and — after the manuscript is drafted — red-teams its own central claim before
+any journal sees it. Two things stay human and protected at every gate: the **💡 IDEA**
+(what is worth asking, what it means, what is ethical) and the **📊 DATA** (real,
+IRB-approved, never machine-originated). See
+[`references/ai-for-science-model.md`](references/ai-for-science-model.md).
+
+A pipeline that generates and manages IMRAD-format project directories with
+structured Markdown files, a literature matrix, and quality checklists.
 
 ```mermaid
 graph LR
-    P1[1. Literature Search] --> P2[2. Outline]
+    P0["−1. Discovery\n(question · novelty · design · pre-reg)"] --> P1[1. Literature Search]
+    P1 --> P2[2. Outline]
     P2 --> P25[2.5 Tables/Figures]
     P25 --> P3[3. Draft]
     P3 --> P4[4. Humanize]
     P4 --> P5[5. References]
     P5 --> P6[6. Quality Review]
-    P6 --> P7[7. Pre-Submission]
+    P6 --> P65["6.5 Adversarial Review"]
+    P65 --> P7[7. Pre-Submission]
+    P65 -.->|KILL| P0
     P7 --> P8["8. Revision ①"]
     P8 --> P9["9. Post-Acceptance"]
     P7 -.-> P10["10. Rejection → Resubmit"]

@@ -1,5 +1,51 @@
 # Changelog
 
+## [4.0.0] - 2026-06-10
+
+### AI-for-Science layer — from manuscript factory to research engine
+
+The skill covered everything downstream of "you have a question and data": search,
+draft, format, submit, revise. This release adds the upstream and the self-critique
+that the AI-for-Science frontier (Sakana AI Scientist v2, Google co-scientist,
+FutureHouse Robin) showed are where the real leverage — and the real risk — live.
+It wraps the linear pipeline in a discovery loop and names the two things only a
+human can supply: **💡 IDEA** (judgment, meaning, ethics) and **📊 DATA** (real,
+IRB-approved, never machine-originated). Everything between is executed at full
+power, under three integrity guardrails that make the science *more* rigorous, not
+less.
+
+**New Phase −1: Discovery** (runs before Project Init)
+
+| File | Type | Purpose |
+|------|------|---------|
+| `references/ai-for-science-model.md` | New reference | The spine. Operating model: two sovereign inputs, the loop, three guardrails, autonomy dial. Read first. |
+| `templates/research-question.md` | New template | Hypothesis forge: clinical observation → FINER-scored candidates → human selects (💡 gate, generate→debate→rank→evolve) |
+| `references/novelty-check.md` | New reference | Live-literature novelty sweep via real APIs; four-verdict gap classification (anti-reinvention/inflation) |
+| `templates/study-design.md` | New template | Design selection, PICO→variables, DAG, sample-size/power, pre-specified analysis plan |
+| `templates/preregistration.md` | New template | Pre-registration lock (anti-HARKing): registry selection, fillable record, confirmatory/exploratory firewall, deviations log |
+
+**New Phase 6.5: Adversarial Review** (runs after Quality Review, before Pre-Submission)
+
+| File | Type | Purpose |
+|------|------|---------|
+| `references/adversarial-review.md` | New reference | Red-team: four hostile reviewers (statistical/methodological/novelty/integrity) + steelman-the-null; KILL/MAJOR/MINOR/PASS |
+| `~/.claude/agents/paper-red-team.md` | New agent (opus) | Adversarial reviewer for team mode (4 parallel lenses + synthesis) |
+
+**New instrumentation**
+
+| File | Type | Purpose |
+|------|------|---------|
+| `templates/human-loop-ledger.md` | New template | Accountability ledger tagging every gate 💡/📊/🤖 → rolls up into AI-disclosure + CRediT |
+
+### SKILL.md Updates
+
+- New **Phase −1: Discovery** with the 💡 IDEA gate, novelty check, study design, and the 📊 DATA gate behind a pre-registration lock
+- New **Phase 6.5: Adversarial Review** red-teaming the central claim before submission; a KILL loops back to Discovery
+- **Real literature tools**: Phase 1 search and Phase 5 citation verification now lead with the PubMed MCP (`search_articles`, `find_related_articles`, `lookup_article_by_citation`, …) + OpenAlex / Europe PMC / Semantic Scholar, replacing the "WebSearch is unreliable, ask the user" fallback
+- New **AI-for-Science Operating Model** section in the Overview; reference-file list regrouped (AI-for-Science layer + Core writing layer); team-mode table + workflow extended with `paper-red-team`
+- **Hard rule** added: the 💡 IDEA gate, the 📊 DATA gate, and the pre-registration lock are never autopilot for clinical work
+- **Phase −1 refinements** (surfaced by dogfooding the skill on a real study — the AI care-seeking study): a **Phase −1 entry matrix** + **re-enterable Phase −1** (advanced studies enter at the first guardrail not yet passed, not the forge), **research-question.md Mode B** (resume/refine an existing question), a **descriptive-primary / precision-power track** for estimation pilots, and **design-stage adversarial review** (red-team the design pre-data, before the pre-registration lock)
+
 ## [3.3.0] - 2026-06-07
 
 ### SR Screening Execution Pipeline (Phase 1.5)
