@@ -68,7 +68,8 @@ def detect_type(values):
         unique = set(numeric)
         if unique <= {0, 1, 0.0, 1.0}:
             return "binary", numeric
-        if len(unique) <= 10:
+        all_integer_like = all(float(v).is_integer() for v in numeric)
+        if all_integer_like and 2 < len(unique) <= 10 and len(unique) / len(numeric) <= 0.2:
             return "categorical", clean
         return "continuous", numeric
 
@@ -137,8 +138,8 @@ def format_categorical(values):
     lines = []
     for level, n in sorted(counts.items()):
         pct = n / total * 100
-        lines.append(f"  {level}: {n} ({pct:.1f}%)")
-    return "\n".join(lines)
+        lines.append(f"{level}: {n} ({pct:.1f}%)")
+    return "<br>".join(lines)
 
 
 def compute_p_value(var_type, group_values):
@@ -240,7 +241,7 @@ def generate_table1(headers, rows, group_col=None, exclude_cols=None):
         elif var_type == "binary":
             all_formatted = format_binary(clean_all)
         elif var_type == "categorical":
-            all_formatted = format_binary(clean_all)  # Simplified for table row
+            all_formatted = format_categorical(clean_all)
         else:
             continue
 
@@ -256,7 +257,7 @@ def generate_table1(headers, rows, group_col=None, exclude_cols=None):
                 elif var_type == "binary":
                     group_formatted.append(format_binary(gclean))
                 else:
-                    group_formatted.append(format_binary(gclean))
+                    group_formatted.append(format_categorical(gclean))
 
             p_val = compute_p_value(var_type, group_values)
             row_line = f"| {col} | {all_formatted} | "

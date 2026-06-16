@@ -44,8 +44,29 @@ import os
 from typing import NamedTuple
 
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+
+
+plt = None
+patches = None
+
+
+def require_matplotlib():
+    """Import plotting dependencies only when a plot is actually generated."""
+    global plt, patches
+    if plt is not None and patches is not None:
+        return
+    try:
+        import matplotlib.pyplot as mpl_pyplot
+        import matplotlib.patches as mpl_patches
+    except ImportError:
+        print(
+            "Error: matplotlib is required to generate forest plots. "
+            "Install it with: pip install matplotlib",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    plt = mpl_pyplot
+    patches = mpl_patches
 
 
 class StudyData(NamedTuple):
@@ -163,6 +184,7 @@ def create_forest_plot(
     dpi=300,
 ):
     """Generate a publication-quality forest plot."""
+    require_matplotlib()
 
     n_studies = len(studies)
     fig_height = max(4, 1.0 + n_studies * 0.55 + 1.5)

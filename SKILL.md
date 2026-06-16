@@ -382,10 +382,11 @@ If the user has quantitative data ready for analysis, Claude Code can execute Py
 
 **Analysis output directory:** All results go to `data/analysis/`. Figures for the manuscript go to `figures/`.
 
-**Required Python packages:** `numpy`, `pandas`, `scipy`, `statsmodels`, `lifelines`, `matplotlib`, `seaborn`
+**Required Python packages:** Install the utility-script dependencies from the
+skill root:
 
 ```bash
-pip install numpy pandas scipy statsmodels lifelines matplotlib seaborn scikit-learn
+pip install -r ~/.claude/skills/paper-writer/requirements.txt
 ```
 
 **Statistical reporting requirements** (before writing Results):

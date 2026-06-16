@@ -1,5 +1,7 @@
 # Paper Writer Skill
 
+[![Tests](https://github.com/kgraph57/paper-writer-skill/actions/workflows/tests.yml/badge.svg)](https://github.com/kgraph57/paper-writer-skill/actions/workflows/tests.yml)
+
 A Claude Code skill for medical/scientific paper writing. Covers the entire manuscript lifecycle from literature search to submission, peer review response, and rejection handling.
 
 > **日本語版はこちら → [README.ja.md](README.ja.md)**
@@ -210,10 +212,15 @@ paper-writer/
 ├── CHANGELOG.md                       # Version history
 ├── README.md                          # This file
 ├── README.ja.md                       # Japanese documentation
+├── requirements.txt                   # Python dependencies for utility scripts
 │
-├── templates/                         # 31 files — Section templates
+├── templates/                         # 37 files — Section templates
 │   ├── project-init.md                # Project initialization (Original Article)
 │   ├── project-init-case.md           # Project initialization (Case Report)
+│   ├── research-question.md           # Question forge and FINER scoring
+│   ├── study-design.md                # Study design, variables, power, feasibility
+│   ├── preregistration.md             # Pre-registration lock template
+│   ├── human-loop-ledger.md           # Human/AI accountability ledger
 │   ├── literature-matrix.md           # Literature comparison matrix
 │   ├── methods.md                     # Methods writing guide
 │   ├── results.md                     # Results writing guide
@@ -233,6 +240,7 @@ paper-writer/
 │   ├── sr-grade.md                    # GRADE evidence assessment
 │   ├── sr-rob.md                      # Risk of bias assessment
 │   ├── sr-prospero.md                 # PROSPERO registration template
+│   ├── sr-screening-pipeline.md       # Dual-screening execution pipeline
 │   ├── response-to-reviewers.md       # Response to reviewers template
 │   ├── revision-cover-letter.md       # Revision cover letter
 │   ├── declarations.md                # Declarations (ethics, COI, funding, AI disclosure)
@@ -245,7 +253,10 @@ paper-writer/
 │   ├── data-management.md             # Data management (raw/processed/analysis)
 │   └── analysis-workflow.md           # Data analysis workflow guide
 │
-├── references/                        # 27 files — Reference materials
+├── references/                        # 30 files — Reference materials
+│   ├── ai-for-science-model.md        # Research-engine operating model
+│   ├── novelty-check.md               # Live-literature novelty check
+│   ├── adversarial-review.md          # Design/manuscript red-team review
 │   ├── imrad-guide.md                 # IMRAD structure and writing principles
 │   ├── section-checklist.md           # Per-section quality checklist
 │   ├── citation-guide.md              # Citation formatting and management
@@ -274,15 +285,24 @@ paper-writer/
 │   ├── journal-reformatting.md        # Journal reformatting and cascading strategy
 │   └── master-reference-list.md       # Master URL list (100+ links, 13 categories)
 │
-└── scripts/                           # 5 files — Utilities & Analysis
-    ├── compile-manuscript.sh           # Compile sections into single manuscript
-    ├── word-count.sh                  # Word count utility
-    ├── forest-plot.py                 # Forest plot generator
-    ├── table1.py                      # Table 1 generator (baseline characteristics)
-    └── analysis-template.py           # Statistical analysis template (t-test, logistic, survival)
+├── scripts/                           # 8 files — Utilities & Analysis
+│   ├── compile-manuscript.sh          # Compile sections into single manuscript
+│   ├── word-count.sh                  # Word count utility
+│   ├── forest-plot.py                 # Forest plot generator
+│   ├── sr-dedup.py                    # SR record parsing and de-duplication
+│   ├── sr-pdf-link.py                 # Link full-text PDFs to records by DOI
+│   ├── sr-prisma-count.py             # PRISMA flow counts and consistency checks
+│   ├── table1.py                      # Table 1 generator (baseline characteristics)
+│   └── analysis-template.py           # Statistical analysis template (t-test, logistic, survival)
+│
+├── tests/
+│   └── test_scripts.py                # Regression tests for utility scripts
+│
+└── .github/workflows/
+    └── tests.yml                      # CI: syntax checks + regression tests
 ```
 
-**Total: 66 files** (31 templates + 27 references + 5 scripts + SKILL.md + CHANGELOG.md + README.md)
+**Total: 83 tracked files** (37 templates + 30 references + 8 scripts + tests + CI + root docs/config)
 
 ## Workflow (10 Phases)
 
@@ -364,7 +384,16 @@ Register the skill in Claude Code settings:
 
 - [Claude Code](https://claude.ai/code) CLI
 - WebSearch / WebFetch (used for literature search)
-- Python 3 + numpy, pandas, scipy, statsmodels, lifelines, matplotlib (for data analysis scripts)
+- Python 3 for utility scripts
+- Python packages for analysis/PDF utilities: `python -m pip install -r requirements.txt`
+
+## Development
+
+```bash
+python -m py_compile scripts/*.py
+bash -n scripts/*.sh
+python -m unittest discover -s tests -v
+```
 
 ## License
 

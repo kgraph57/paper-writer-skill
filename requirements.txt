@@ -1,0 +1,8 @@
+numpy
+pandas
+scipy
+statsmodels
+lifelines
+matplotlib
+pypdf
+pdfplumber

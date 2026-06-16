@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased]
+
+### Reliability and developer experience
+
+- Added regression tests for utility scripts and a GitHub Actions workflow that
+  runs Python syntax checks, shell syntax checks, and the unittest suite.
+- Fixed manuscript utilities to read the standard v3.2 project layout, including
+  manuscript files under `sections/`.
+- Fixed `table1.py` so categorical variables render category-level counts instead
+  of being treated as binary variables.
+- Implemented the advertised `chi2`, `linear`, and `correlation` modes in
+  `analysis-template.py`, including Markdown result files.
+- Fixed `analysis-template.py --analysis descriptive` for categorical-only
+  datasets.
+- Added a Markdown-table fallback so `analysis-template.py` does not crash when
+  pandas' optional `tabulate` dependency is absent.
+- Fixed `word-count.sh --help`, Markdown link text counting, and executable bits
+  for shebang Python scripts.
+- Made `forest-plot.py --help` work without requiring matplotlib to be installed
+  before argument parsing.
+- Added `requirements.txt` and refreshed README file counts/documentation.
+
 ## [4.0.0] - 2026-06-10
 
 ### AI-for-Science layer — from manuscript factory to research engine
