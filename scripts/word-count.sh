@@ -74,6 +74,30 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
+usage() {
+    cat <<'EOF'
+word-count.sh - Track word counts per section for academic papers
+
+USAGE:
+  word-count.sh <project-dir> [journal-preset]
+  word-count.sh --help
+
+JOURNAL PRESETS:
+  jmir, bmj-open, lancet, nejm, jama, plos-one, nature, bmj,
+  annals, cochrane, custom
+
+EXAMPLES:
+  word-count.sh ~/papers/my-systematic-review
+  word-count.sh ~/papers/my-systematic-review jmir
+  word-count.sh . custom
+EOF
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage
+    exit 0
+fi
+
 # ============================================================================
 # Journal Presets (total body word limits and per-section guidance)
 # Format: TOTAL ABSTRACT INTRO METHODS RESULTS DISCUSSION CONCLUSION
@@ -135,10 +159,10 @@ count_words_in_file() {
         -e '/^---$/,/^---$/d' \
         -e '/^```/,/^```/d' \
         -e '/^<!--/,/-->$/d' \
-        -e 's/^#\+ //' \
+        -e '/^#/d' \
         -e 's/!\[[^]]*\]([^)]*)//g' \
-        -e 's/\[[^]]*\]([^)]*)//g' \
-        -e 's/\[([^]]*)\]/\1/g' \
+        -e 's/\[\([^]]*\)\]([^)]*)/\1/g' \
+        -e 's/\[\([^]]*\)\]/\1/g' \
         -e 's/<[^>]*>//g' \
         -e 's/\*\*//g' \
         -e 's/\*//g' \
@@ -177,12 +201,23 @@ declare -a SECTION_LIMITS
 find_section_file() {
     local pattern="$1"
     local dir="$PROJECT_DIR"
-    # Try common patterns
-    for f in "$dir"/$pattern; do
-        if [ -f "$f" ]; then
-            echo "$f"
-            return
-        fi
+    local search_dirs=(
+        "$dir"
+        "$dir/sections"
+        "$dir/references"
+        "$dir/supplements"
+        "$dir/supplements/appendices"
+    )
+    local search_dir f
+
+    for search_dir in "${search_dirs[@]}"; do
+        [ -d "$search_dir" ] || continue
+        for f in "$search_dir"/$pattern; do
+            if [ -f "$f" ]; then
+                echo "$f"
+                return
+            fi
+        done
     done
     echo ""
 }

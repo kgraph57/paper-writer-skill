@@ -77,16 +77,28 @@ check_latex() {
 
 find_section_file() {
     local project_dir="$1" pattern="$2"
-    if [[ -f "${project_dir}/${pattern}.md" ]]; then
-        echo "${project_dir}/${pattern}.md"
-        return 0
-    fi
-    local globs=("${project_dir}/${pattern}"*.md "${project_dir}"/[0-9]*"_${pattern}"*.md "${project_dir}"/[0-9]*"-${pattern}"*.md)
-    for g in "${globs[@]}"; do
-        if [[ -f "$g" ]]; then
-            echo "$g"
-            return 0
-        fi
+    local search_dirs=(
+        "${project_dir}"
+        "${project_dir}/sections"
+        "${project_dir}/references"
+        "${project_dir}/tables"
+        "${project_dir}/figures"
+        "${project_dir}/supplements"
+        "${project_dir}/supplements/appendices"
+    )
+    local dir g
+    for dir in "${search_dirs[@]}"; do
+        [[ -d "${dir}" ]] || continue
+        for g in \
+            "${dir}/${pattern}.md" \
+            "${dir}/${pattern}"*.md \
+            "${dir}"/[0-9]*"_${pattern}"*.md \
+            "${dir}"/[0-9]*"-${pattern}"*.md; do
+            if [[ -f "$g" ]]; then
+                echo "$g"
+                return 0
+            fi
+        done
     done
     return 1
 }
@@ -94,7 +106,7 @@ find_section_file() {
 strip_internal_notes() {
     local f="$1"
     perl -0777 -pe 's/<!--.*?-->//gs' "$f" | \
-        grep -vE '^\s*(TODO|FIXME|HACK|XXX|NOTE|INTERNAL):' 2>/dev/null | \
+        { grep -vE '^\s*(TODO|FIXME|HACK|XXX|NOTE|INTERNAL):' 2>/dev/null || true; } | \
         cat -s
 }
 

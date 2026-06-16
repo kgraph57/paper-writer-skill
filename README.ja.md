@@ -1,5 +1,7 @@
 # Paper Writer Skill（日本語ドキュメント）
 
+[![Tests](https://github.com/kgraph57/paper-writer-skill/actions/workflows/tests.yml/badge.svg)](https://github.com/kgraph57/paper-writer-skill/actions/workflows/tests.yml)
+
 Claude Code用の医学論文執筆スキル。文献検索から投稿・リジェクト対応まで、論文執筆の全工程をカバーする。
 
 > **English version → [README.md](README.md)**
@@ -197,10 +199,15 @@ paper-writer/
 ├── CHANGELOG.md                       # 変更履歴
 ├── README.md                          # 英語ドキュメント
 ├── README.ja.md                       # このファイル（日本語）
+├── requirements.txt                   # ユーティリティスクリプト用Python依存関係
 │
-├── templates/                         # 31ファイル — セクション別テンプレート
+├── templates/                         # 37ファイル — セクション別テンプレート
 │   ├── project-init.md                # プロジェクト初期化（Original Article）
 │   ├── project-init-case.md           # プロジェクト初期化（Case Report）
+│   ├── research-question.md           # 研究疑問の生成・FINER評価
+│   ├── study-design.md                # 研究デザイン・変数・パワー・実現性
+│   ├── preregistration.md             # 事前登録ロックテンプレート
+│   ├── human-loop-ledger.md           # 人間/AIの関与記録台帳
 │   ├── literature-matrix.md           # 文献比較マトリクス
 │   ├── methods.md                     # Methods執筆ガイド
 │   ├── results.md                     # Results執筆ガイド
@@ -220,6 +227,7 @@ paper-writer/
 │   ├── sr-grade.md                    # GRADEエビデンス評価
 │   ├── sr-rob.md                      # Risk of Bias評価
 │   ├── sr-prospero.md                 # PROSPERO登録テンプレート
+│   ├── sr-screening-pipeline.md       # 二重スクリーニング実行パイプライン
 │   ├── response-to-reviewers.md       # 査読者への回答テンプレート
 │   ├── revision-cover-letter.md       # 改訂時カバーレター
 │   ├── declarations.md                # 宣言テンプレート（倫理・COI・資金・AI開示）
@@ -232,7 +240,10 @@ paper-writer/
 │   ├── data-management.md             # データ管理（raw/processed/analysis）
 │   └── analysis-workflow.md           # データ解析ワークフローガイド
 │
-├── references/                        # 27ファイル — リファレンス資料
+├── references/                        # 30ファイル — リファレンス資料
+│   ├── ai-for-science-model.md        # research engineとしての運用モデル
+│   ├── novelty-check.md               # ライブ文献による新規性確認
+│   ├── adversarial-review.md          # 研究デザイン/原稿のレッドチームレビュー
 │   ├── imrad-guide.md                 # IMRAD構造と執筆原則
 │   ├── section-checklist.md           # セクション別品質チェックリスト
 │   ├── citation-guide.md              # 引用形式と管理
@@ -261,15 +272,24 @@ paper-writer/
 │   ├── journal-reformatting.md        # ジャーナル再フォーマット
 │   └── master-reference-list.md       # マスターURL一覧（100+リンク）
 │
-└── scripts/                           # 5ファイル — ユーティリティ・解析
-    ├── compile-manuscript.sh           # セクション統合スクリプト
-    ├── word-count.sh                  # 語数カウント
-    ├── forest-plot.py                 # フォレストプロット生成
-    ├── table1.py                      # Table 1生成（ベースライン特性）
-    └── analysis-template.py           # 統計解析テンプレート（t検定、ロジスティック、生存分析）
+├── scripts/                           # 8ファイル — ユーティリティ・解析
+│   ├── compile-manuscript.sh          # セクション統合スクリプト
+│   ├── word-count.sh                  # 語数カウント
+│   ├── forest-plot.py                 # フォレストプロット生成
+│   ├── sr-dedup.py                    # SR文献レコードの読み込み・重複除去
+│   ├── sr-pdf-link.py                 # DOIでフルテキストPDFとレコードを対応付け
+│   ├── sr-prisma-count.py             # PRISMAフロー数値と整合性チェック
+│   ├── table1.py                      # Table 1生成（ベースライン特性）
+│   └── analysis-template.py           # 統計解析テンプレート（t検定、ロジスティック、生存分析）
+│
+├── tests/
+│   └── test_scripts.py                # ユーティリティスクリプトの回帰テスト
+│
+└── .github/workflows/
+    └── tests.yml                      # CI: 構文チェック + 回帰テスト
 ```
 
-**合計: 66ファイル**（テンプレート31 + リファレンス27 + スクリプト5 + SKILL.md + CHANGELOG.md + README.md）
+**合計: 83 tracked files**（テンプレート37 + リファレンス30 + スクリプト8 + tests + CI + ルート文書/設定）
 
 ## ワークフロー（10フェーズ）
 
@@ -351,7 +371,16 @@ Claude Codeの設定に登録：
 
 - [Claude Code](https://claude.ai/code) CLI
 - WebSearch / WebFetch（文献検索に使用）
-- Python 3 + numpy, pandas, scipy, statsmodels, lifelines, matplotlib（データ解析スクリプト用）
+- ユーティリティスクリプト用のPython 3
+- 解析/PDFユーティリティ用Pythonパッケージ: `python -m pip install -r requirements.txt`
+
+## 開発
+
+```bash
+python -m py_compile scripts/*.py
+bash -n scripts/*.sh
+python -m unittest discover -s tests -v
+```
 
 ## ライセンス
 
