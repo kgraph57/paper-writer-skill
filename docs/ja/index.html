@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paper Writer Skill — 原稿工場ではない。研究エンジン。</title>
+    <meta
+      name="description"
+      content="医学・科学論文のための Claude Code / エージェントスキル。Discoveryゲート、ステージゲート付きIMRAD、日英ヒューマナイズ、敵対的レビュー、投稿・査読対応まで。"
+    />
+    <link rel="stylesheet" href="../site/css/tokens.css" />
+    <link rel="stylesheet" href="../site/css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へスキップ</a>
+
+    <header class="site-header">
+      <div class="wrap site-header-inner">
+        <a class="wordmark" href="#hero">Paper&nbsp;Writer&nbsp;<span class="tld">Skill</span></a>
+        <nav class="site-nav" aria-label="サイト">
+          <a href="#feel">デモ</a>
+          <a href="#pipeline">パイプライン</a>
+          <a href="#why">スター理由</a>
+          <a href="#start">インストール</a>
+          <a href="../" hreflang="en">English</a>
+        </nav>
+        <a
+          class="btn btn-ghost star-btn"
+          href="https://github.com/kgraph57/paper-writer-skill"
+          rel="noopener"
+          >★ GitHubでStar</a
+        >
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="hero-kicker">Claude Code · Agent Skill · v3.2</p>
+            <h1>原稿工場ではない。<br /><em>研究エンジン。</em></h1>
+            <p class="lede">
+              臨床のひらめきから投稿可能なIMRADまで。Discoveryゲート、ステージゲート執筆、日英ヒューマナイズ、そしてジャーナルの前に弱い主張を
+              <strong>KILL</strong> できる敵対的レビュー。人間が主権を持つのは二つだけ：💡 IDEA と 📊 DATA。
+            </p>
+            <p class="hero-actions">
+              <a class="btn btn-primary" href="#start">60秒でインストール</a>
+              <a
+                class="btn btn-ghost"
+                href="https://github.com/kgraph57/paper-writer-skill"
+                rel="noopener"
+                >★ GitHubでStar</a
+              >
+            </p>
+            <p class="hero-sub">
+              <code>SKILL.md</code> を読むエージェントで動作。ネットワークは文献検索用（テレメトリなし）。
+            </p>
+          </div>
+          <div>
+            <div class="term" id="feel">
+              <div class="term-bar">
+                <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+                <span class="term-title">agent · paper-writer</span>
+              </div>
+              <div class="chat" data-chat>
+                <div class="chat-msg chat-msg-user">
+                  <span class="chat-who">あなた</span>
+                  <div class="chat-bubble">症例報告を書きたい。非糖尿病成人でGLP-1開始後の原因不明低血糖。データは匿名化済み・IRB承認済み。</div>
+                </div>
+                <div class="chat-msg chat-msg-agent">
+                  <span class="chat-who">Paper Writer</span>
+                  <div class="chat-bubble"><span class="a">Phase −1 Discovery</span>
+<span class="d">FINER質問を生成… ライブ文献で新規性チェック…</span>
+
+<span class="g">GATE · IDEA</span> — 候補を3つ提示。
+本文を書く前に、人間が 💡 IDEA を選ぶ必要があります。
+
+<span class="g">GATE · DATA</span> — 📊 DATA が人間由来・匿名化済みで、モデルが捏造していないことを確認。</div>
+                </div>
+                <div class="chat-msg chat-msg-user">
+                  <span class="chat-who">あなた</span>
+                  <div class="chat-bubble">Q2でロック。CARE症例報告。投稿先はBMJ Case Reports。英語。</div>
+                </div>
+                <div class="chat-msg chat-msg-agent">
+                  <span class="chat-who">Paper Writer</span>
+                  <div class="chat-bubble"><span class="a">計画ロック</span> · CAREチェックリスト起動
+スキャフォールド準備完了。次は文献マトリクス → アウトライン承認 → 本文より先に表・図。</div>
+                </div>
+              </div>
+              <button type="button" class="chat-replay">リプレイ</button>
+            </div>
+            <p class="term-caption">デモは架空・PHIなし。ゲートは本番と同じ考え方です。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sovereignty" class="band">
+        <div class="wrap">
+          <span class="kicker">譲れないルール</span>
+          <h2>人間が主権を持つのは二つ</h2>
+          <div class="sov-grid">
+            <article class="sov-card">
+              <h3>💡 IDEA</h3>
+              <p>何を問う価値があるか、意味は何か、倫理的か。候補はエージェントが鍛造し、ロックは人間がする。</p>
+            </article>
+            <article class="sov-card">
+              <h3>📊 DATA</h3>
+              <p>実在・IRB承認・機械起源ではない。生の臨床データはローカルのまま gitignore。数値の捏造はしない。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="pipeline">
+        <div class="wrap">
+          <span class="kicker">ライフサイクル</span>
+          <h2>Discoveryから査読対応まで、ゲート付き</h2>
+          <ol class="pipe">
+            <li class="pipe-step is-new"><span class="pipe-num">−1</span><span class="pipe-label">Discovery<small>質問鍛造 · 新規性 · デザイン · 事前登録</small></span></li>
+            <li class="pipe-step"><span class="pipe-num">1–2.5</span><span class="pipe-label">文献 → アウトライン → 表・図<small>本文より先に展示物を設計</small></span></li>
+            <li class="pipe-step"><span class="pipe-num">3–5</span><span class="pipe-label">執筆 → ヒューマナイズ → 文献<small>日英AIパターン除去 · DOI検証</small></span></li>
+            <li class="pipe-step is-gate"><span class="pipe-num">6–6.5</span><span class="pipe-label">品質 + 敵対的レビュー<small>中心主張をレッドチーム</small></span></li>
+            <li class="pipe-step"><span class="pipe-num">7–10</span><span class="pipe-label">投稿 · 改訂 · 受理 · リジェクト再投稿</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="why" class="band">
+        <div class="wrap">
+          <span class="kicker">Why this gets starred</span>
+          <h2>具体的な差分</h2>
+          <div class="why-grid">
+            <article class="why-card"><h3>書く前のDiscovery</h3><p>質問を鍛え、ライブ文献で新規性を見て、人間がIDEAを選んでから本文へ。</p></article>
+            <article class="why-card"><h3>自動修正付きステージゲート</h3><p>8ゲート。FAILならフィードバック→修正→再チェック（最大3回）。</p></article>
+            <article class="why-card"><h3>敵対的レビュー</h3><p>中心主張を潰しにいく。KILLならDiscoveryへ戻す。</p></article>
+            <article class="why-card"><h3>日英ヒューマナイズ</h3><p>英語18・日本語13の学術AIパターン。</p></article>
+            <article class="why-card"><h3>6タイプ / 20+ガイドライン</h3><p>CARE / CONSORT / STROBE / PRISMA など。</p></article>
+            <article class="why-card"><h3>チームモード + テスト済みスクリプト</h3><p><code>table1.py</code> やSR補助をCIで検証。</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="start">
+        <div class="wrap">
+          <span class="kicker">60秒スタート</span>
+          <h2>入れて、自然言語で呼ぶ</h2>
+          <div class="install-shell">
+            <button type="button" class="copy-btn" data-copy="#install-cmd" data-copied-label="コピー済み">Copy</button>
+            <pre class="install-term" id="install-cmd"><span class="p">$</span> npx skills add kgraph57/paper-writer-skill</pre>
+          </div>
+          <div class="trigger-box">
+            <p>呼び出し例</p>
+            <blockquote>「論文を書く」 · 「論文執筆」 · “write paper” · “start manuscript”</blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section id="case" class="band">
+        <div class="wrap">
+          <span class="kicker">Proof</span>
+          <h2>公開ケーススタディ（2分）</h2>
+          <div class="case-card">
+            <h3>Discovery → 草稿 → ヒューマナイズ → 敵対的レビュー</h3>
+            <p>PHIなしのCARE症例スパークで、ナイーブな「とりあえず書く」経路とゲート付き経路の差を見せます。</p>
+            <a
+              class="btn btn-primary"
+              href="https://github.com/kgraph57/paper-writer-skill/blob/main/examples/case-studies/discovery-to-draft.md"
+              rel="noopener"
+              >ケースを読む</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p class="ft-cta">査読に耐える原稿と、データについて嘘をつかない姿勢が大事なら — Starしてエージェントに載せてください。</p>
+        <p class="ft-actions">
+          <a class="btn btn-primary" href="#start">インストール</a>
+          <a class="btn btn-ghost" href="https://github.com/kgraph57/paper-writer-skill" rel="noopener">★ GitHubでStar</a>
+        </p>
+        <hr class="ft-divider" />
+        <div class="ft-small">
+          <p>MIT License · Copyright (c) 2026 KEN</p>
+          <ul class="ft-links">
+            <li><a href="../">English</a></li>
+            <li><a href="https://github.com/kgraph57/paper-writer-skill">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+    <script src="../site/js/main.js" defer></script>
+  </body>
+</html>
