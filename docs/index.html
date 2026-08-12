@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paper Writer Skill — Not a manuscript factory. A research engine.</title>
+    <meta
+      name="description"
+      content="Claude Code / agent skill for medical and scientific manuscripts: Discovery gates, stage-gated IMRAD drafting, EN+JP humanizer, adversarial review, and submission/revision loops. Human stays sovereign on IDEA and DATA."
+    />
+    <meta property="og:title" content="Paper Writer Skill" />
+    <meta
+      property="og:description"
+      content="Not a manuscript factory. A research engine — with gates that refuse to lie."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="./site/css/tokens.css" />
+    <link rel="stylesheet" href="./site/css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap site-header-inner">
+        <a class="wordmark" href="#hero">Paper&nbsp;Writer&nbsp;<span class="tld">Skill</span></a>
+        <nav class="site-nav" aria-label="Site">
+          <a href="#feel">Demo</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#why">Why star</a>
+          <a href="#start">Install</a>
+          <a href="./ja/" hreflang="ja">日本語</a>
+        </nav>
+        <a
+          class="btn btn-ghost star-btn"
+          href="https://github.com/kgraph57/paper-writer-skill"
+          rel="noopener"
+          >★ Star on GitHub</a
+        >
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="hero" aria-label="Introduction">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="hero-kicker">Claude Code · Agent Skill · v3.2</p>
+            <h1>Not a manuscript factory.<br /><em>A research engine.</em></h1>
+            <p class="lede">
+              From clinical spark to submission-ready IMRAD — with Discovery
+              gates, stage-gated drafting, EN+JP humanizing, and an adversarial
+              review that can <strong>KILL</strong> a weak claim before any
+              journal sees it. Two things stay human: the 💡 IDEA and the 📊 DATA.
+            </p>
+            <p class="hero-actions">
+              <a class="btn btn-primary" href="#start">Install in 60 seconds</a>
+              <a
+                class="btn btn-ghost"
+                href="https://github.com/kgraph57/paper-writer-skill"
+                rel="noopener"
+                >★ Star on GitHub</a
+              >
+            </p>
+            <p class="hero-sub">
+              Works with Claude Code and other agents that load
+              <code>SKILL.md</code>. Network used for literature — not for
+              telemetry.
+            </p>
+          </div>
+
+          <div>
+            <div class="term" id="feel" aria-label="Simulated agent conversation">
+              <div class="term-bar">
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+                <span class="term-title">agent · paper-writer</span>
+              </div>
+              <div class="chat" data-chat>
+                <div class="chat-msg chat-msg-user">
+                  <span class="chat-who">You</span>
+                  <div class="chat-bubble">Write a case report from this spark: unexplained hypoglycemia after GLP-1 start in a non-diabetic adult. Data is de-identified and IRB-cleared.</div>
+                </div>
+                <div class="chat-msg chat-msg-agent">
+                  <span class="chat-who">Paper Writer</span>
+                  <div class="chat-bubble"><span class="a">Phase −1 Discovery</span>
+<span class="d">Forging FINER questions… novelty check against live literature…</span>
+
+<span class="g">GATE · IDEA</span> — three candidate questions ranked.
+Human must pick the 💡 IDEA before any prose is drafted.
+
+<span class="g">GATE · DATA</span> — confirming 📊 DATA is human-origin,
+de-identified, and never invented by the model.</div>
+                </div>
+                <div class="chat-msg chat-msg-user">
+                  <span class="chat-who">You</span>
+                  <div class="chat-bubble">Lock Q2. CARE case report. Target: BMJ Case Reports. EN.</div>
+                </div>
+                <div class="chat-msg chat-msg-agent">
+                  <span class="chat-who">Paper Writer</span>
+                  <div class="chat-bubble"><span class="a">Plan locked</span> · CARE checklist armed
+Project scaffold ready: <span class="d">00_literature/ · 01_outline.md · sections/ · ethics/</span>
+
+Next: literature matrix → outline approval → tables before prose.
+No manuscript factory mode — gates stay on.</div>
+                </div>
+              </div>
+              <button type="button" class="chat-replay">Replay</button>
+            </div>
+            <p class="term-caption">Illustrative demo — no patient data. Gates are real.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sovereignty" class="band" aria-label="Human sovereignty">
+        <div class="wrap">
+          <span class="kicker">Non-negotiable</span>
+          <h2>Human stays sovereign on two things</h2>
+          <p class="section-lede">
+            Everything else can be drafted, checked, and red-teamed by the agent.
+            These two cannot be delegated away.
+          </p>
+          <div class="sov-grid">
+            <article class="sov-card">
+              <h3>💡 IDEA</h3>
+              <p>
+                What is worth asking, what it means, and what is ethical.
+                Discovery forges candidates; the human locks the question.
+              </p>
+            </article>
+            <article class="sov-card">
+              <h3>📊 DATA</h3>
+              <p>
+                Real, IRB-approved, never machine-originated. Raw clinical data
+                stays local and gitignored. The skill never invents numbers.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="pipeline" aria-label="Pipeline">
+        <div class="wrap">
+          <span class="kicker">Lifecycle</span>
+          <h2>From Discovery to revision — with gates</h2>
+          <p class="section-lede">
+            Ten phases. Eight quality gates with auto-fix loops. Adversarial
+            review can send a claim back to Discovery with a <span class="kill">KILL</span>.
+          </p>
+          <ol class="pipe">
+            <li class="pipe-step is-new">
+              <span class="pipe-num">−1</span>
+              <span class="pipe-label">Discovery<small>Question forge · novelty · design · pre-registration</small></span>
+            </li>
+            <li class="pipe-step">
+              <span class="pipe-num">1–2.5</span>
+              <span class="pipe-label">Literature → Outline → Tables/Figures<small>Matrix first; design exhibits before prose</small></span>
+            </li>
+            <li class="pipe-step">
+              <span class="pipe-num">3–5</span>
+              <span class="pipe-label">Draft → Humanize → References<small>IMRAD writing order · EN 18 + JP 13 AI patterns · DOI checks</small></span>
+            </li>
+            <li class="pipe-step is-gate">
+              <span class="pipe-num">6–6.5</span>
+              <span class="pipe-label">Quality + Adversarial review<small>Cross-section gates, then red-team the central claim</small></span>
+            </li>
+            <li class="pipe-step">
+              <span class="pipe-num">7–10</span>
+              <span class="pipe-label">Submit · Revise · Accept · Reject/resubmit<small>Cover letter, response letters, cascading strategy</small></span>
+            </li>
+          </ol>
+          <p class="pipe-note">
+            Six paper types: Original · Case Report · Review · Systematic Review · Letter · Protocol.
+            20+ reporting guidelines (CARE, CONSORT, STROBE, PRISMA…).
+          </p>
+        </div>
+      </section>
+
+      <section id="humanize" class="band" aria-label="Humanizer">
+        <div class="wrap">
+          <span class="kicker">Phase 4</span>
+          <h2>Kill the AI tell — before reviewers do</h2>
+          <p class="section-lede">
+            Real patterns from <code>references/humanizer-academic.md</code>.
+            English and Japanese. Section-priority checklists.
+          </p>
+          <div class="hum-grid">
+            <div class="hum-row">
+              <div class="hum-cell hum-before">
+                <span class="hum-tag">Before</span>
+                <div>represents a <del>pivotal challenge in the evolving landscape</del></div>
+                <span class="hum-pattern">Significance inflation</span>
+              </div>
+              <div class="hum-cell hum-after">
+                <span class="hum-tag">After</span>
+                <div><ins>is highly prevalent in patients with diabetes</ins></div>
+                <span class="hum-pattern">State the concrete claim</span>
+              </div>
+            </div>
+            <div class="hum-row">
+              <div class="hum-cell hum-before">
+                <span class="hum-tag">Before</span>
+                <div>HR 0.65, P = 0.002), <del>highlighting the cardioprotective effects</del></div>
+                <span class="hum-pattern">Superficial -ing analysis</span>
+              </div>
+              <div class="hum-cell hum-after">
+                <span class="hum-tag">After</span>
+                <div>HR 0.65; 95% CI 0.50–0.85; <ins>P = 0.002</ins>.</div>
+                <span class="hum-pattern">Numbers over vibes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="why" aria-label="Why this gets starred">
+        <div class="wrap">
+          <span class="kicker">Why this gets starred</span>
+          <h2>Concrete differentiators — not vibes</h2>
+          <div class="why-grid">
+            <article class="why-card">
+              <h3>Discovery before drafting</h3>
+              <p>Phase −1 forges and ranks questions, checks novelty against live literature, and locks a plan — only after the human picks the IDEA.</p>
+            </article>
+            <article class="why-card">
+              <h3>Stage-gates that auto-fix</h3>
+              <p>Eight quality gates. FAIL → structured feedback → fixer agent → re-check (up to 3 loops). No silent proceed.</p>
+            </article>
+            <article class="why-card">
+              <h3>Adversarial review</h3>
+              <p>Red-teams the central claim. A KILL path returns to Discovery instead of polishing a bad paper.</p>
+            </article>
+            <article class="why-card">
+              <h3>EN + JP humanizer</h3>
+              <p>18 English and 13 Japanese academic AI patterns with before/after examples and section priorities.</p>
+            </article>
+            <article class="why-card">
+              <h3>Six types, 20+ guidelines</h3>
+              <p>Original, Case Report, Review, SR, Letter, Protocol — CARE / CONSORT / STROBE / PRISMA and more wired in.</p>
+            </article>
+            <article class="why-card">
+              <h3>Team mode + tested scripts</h3>
+              <p>Seven parallel agents for search/draft/humanize/review. Utilities like <code>table1.py</code> and SR helpers with CI tests.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="start" class="band" aria-label="Install">
+        <div class="wrap">
+          <span class="kicker">60-second start</span>
+          <h2>Install it. Ask in plain language.</h2>
+          <div class="install-shell">
+            <button type="button" class="copy-btn" data-copy="#install-cmd" data-copied-label="Copied">Copy</button>
+            <pre class="install-term" id="install-cmd"><span class="c"># Claude Code, Cursor, Codex, and other agents that load skills</span>
+<span class="p">$</span> npx skills add kgraph57/paper-writer-skill</pre>
+          </div>
+          <p class="section-lede" style="margin-top:0">
+            Or clone into Claude Code’s skills directory:
+            <code>git clone https://github.com/kgraph57/paper-writer-skill.git ~/.claude/skills/paper-writer</code>
+          </p>
+          <div class="trigger-box">
+            <p>Natural-language triggers</p>
+            <blockquote>
+              “write paper” · “start manuscript” · 「論文を書く」 · 「論文執筆」
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section id="case" aria-label="Case study">
+        <div class="wrap">
+          <span class="kicker">Proof</span>
+          <h2>One public case study — two minutes</h2>
+          <div class="case-card">
+            <h3>Discovery → draft → humanize → adversarial catch</h3>
+            <p>
+              An illustrative CARE case-report spark (PHI-free) walks through
+              question forge, a naive “just write it” abstract vs. the gated path,
+              two humanizer fixes, and an overclaim the adversarial review kills.
+            </p>
+            <p class="case-flow">
+              <b>Input</b> → Discovery → Weak path → Gated path → Humanize → Adversarial → Proof
+            </p>
+            <a
+              class="btn btn-primary"
+              href="https://github.com/kgraph57/paper-writer-skill/blob/main/examples/case-studies/discovery-to-draft.md"
+              rel="noopener"
+              >Read the case study</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p class="ft-cta">
+          If you care about manuscripts that survive review — and refuse to lie about data — star it and put it on your agent.
+        </p>
+        <p class="ft-actions">
+          <a class="btn btn-primary" href="#start">Install</a>
+          <a
+            class="btn btn-ghost"
+            href="https://github.com/kgraph57/paper-writer-skill"
+            rel="noopener"
+            >★ Star on GitHub</a
+          >
+        </p>
+        <hr class="ft-divider" />
+        <div class="ft-small">
+          <p>MIT License · Copyright (c) 2026 KEN · Independent open-source skill.</p>
+          <p>Does not fabricate data, replace IRB review, or auto-submit to journals.</p>
+          <ul class="ft-links">
+            <li><a href="https://github.com/kgraph57/paper-writer-skill">GitHub</a></li>
+            <li><a href="https://github.com/kgraph57/paper-writer-skill/blob/main/SKILL.md">SKILL.md</a></li>
+            <li><a href="https://github.com/kgraph57/paper-writer-skill/blob/main/LAUNCH.md">LAUNCH.md</a></li>
+            <li><a href="./ja/">日本語</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./site/js/main.js" defer></script>
+  </body>
+</html>
